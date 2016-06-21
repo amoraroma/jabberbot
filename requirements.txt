@@ -1,3 +1,4 @@
 gTTS==1.1.5
 SpeechRecognition==3.4.6
 cobe==2.1.2
+telepot==8.1
