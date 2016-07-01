@@ -37,7 +37,7 @@ class JabberBot(telepot.async.Bot):
                 if command == '/reload' and \
                    msg['from']['id'] == self.config['admin']:
                     self.load()
-                    self.sendMessage(chat_id, 'Jabberbot reloaded!')
+                    await self.sendMessage(chat_id, 'Jabberbot reloaded!')
                 elif command in ['/help', '/start']:
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
