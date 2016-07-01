@@ -7,6 +7,7 @@ __author__ = 'sli'
 __version__ = '0.1'
 __doc__ = '''Uses Cobe to learn grammar and generate responses. Reacts automatically to chat messages.'''
 
+
 class CobePlugin(object):
     def __init__(self):
         if not os.path.isfile('data/jabberbot.brain'):
