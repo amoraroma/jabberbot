@@ -35,6 +35,18 @@ class CobePlugin(object):
             reply = self.brain.reply(msg['text'])
             await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
+    async def ask(self, msg, bot):
+        content_type, chat_type, chat_id = glance(msg)
+        m_id = msg['message_id']
+        text = msg['text'].split(' ', 1)[1]
+        if len(text) > 0:
+            self.brain.learn(text)
+            reply = self.brain.reply(text)
+        else:
+            reply = 'You didn\'t say anything.'
+
+        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+
     def get_reply(self, incoming_msg, bot):
         self.brain.learn(incoming_msg)
         reply = self.brain.reply(incoming_msg)
@@ -45,4 +57,5 @@ p = CobePlugin()
 exports = {
     'self': p,
     'text': p.run
+    '/ask': p.ask
 }
