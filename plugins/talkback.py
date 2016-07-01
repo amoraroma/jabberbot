@@ -1,4 +1,5 @@
 import speech_recognition as sr
+from telepot import glance
 from gtts import gTTS
 
 
@@ -6,7 +7,9 @@ class TalkBackPlugin(object):
     def __init__(self):
         self._recog = sr.Recognizer()
 
-    def run(self, msg, tele):
+    async def run(self, msg, tele):
+        content_type, chat_type, chat_id = glance(msg)
+        m_id = msg['message_id']
         file_id = msg['voice']['file_id']
         path = self.getFile(file_id)['file_path']
         audio_url = 'https://api.telegram.org/file/bot{}/{}'.format(self._token, path)
@@ -35,7 +38,7 @@ class TalkBackPlugin(object):
         reply_audio.save(audio_file)
 
         with open(audio_file, 'wb') as f:
-            tele.sendVoice(int(time.time()), f)
+            await tele.sendVoice(chat_id, f, reply_to_message_id=m_id)
 
 p = TalkBackPlugin()
 
