@@ -1,6 +1,6 @@
 # jabberbot
 
-JabberBot is a Markov-chain chat bot for Telegram that listens for audio messages and reponds to them with its own audio messages.
+JabberBot is a Telegram bot that loads plugins. That's about it. Check the `plugins/` directory to see some examples.
 
 ### Install
 
@@ -9,3 +9,6 @@ JabberBot is a Markov-chain chat bot for Telegram that listens for audio message
 
 Now put your Telegram API key in a file called `token` in the same directory at `jabberbot.py` and you're all set. Have fun.
 
+### Run
+
+    $ python3.5 jabberbot.py
