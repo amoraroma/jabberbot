@@ -23,8 +23,6 @@ class JabberBot(telepot.async.Bot):
 
         self._answerer = telepot.async.helper.Answerer(self)
 
-        self.term = blessings.Terminal()
-
         self.plugins = {}
         self._text_processors = []
         self._audio_processors = []
@@ -88,7 +86,7 @@ class JabberBot(telepot.async.Bot):
         for plugin in self.plugins:
             if command in self.plugins[plugin].exports:
                 _dbg('Invoking {} for command {}.'.format(plugin, command),
-                     self.term, 'PLUGIN')
+                     'PLUGIN')
                 func = self.plugins[plugin].exports[command]
                 await func(msg, self)
 
