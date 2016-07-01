@@ -13,13 +13,22 @@ class CobePlugin(object):
             Brain.init('data/jabberbot.brain')
 
         self.brain = Brain('data/jabberbot.brain')
-
-        if 'cobe' in bot.config:
-            ccfg = bot.config.get('cobe', {})
-            self.silent = ccfg.get('silent', True)
+        self.silent = None
 
     async def run(self, msg, bot):
+        # Don't learn URLs.
+        if 'entities' in msg:
+            for e in msg['entities']:
+                if e['type'] == 'url':
+                    return
+
+        if not self.silent:
+            if 'cobe' in bot.config:
+                ccfg = bot.config.get('cobe', {})
+                self.silent = ccfg.get('silent', True)
+
         self.brain.learn(msg['text'])
+
         if not self.silent:
             content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
