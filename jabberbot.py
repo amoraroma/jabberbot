@@ -98,6 +98,7 @@ class JabberBot(telepot.async.Bot):
         for plugin in self.config['plugins']:
             path = 'plugins.{}'.format(plugin)
             self.plugins[plugin] = importlib.import_module(path)
+            self.plugins[plugin].exports['self'].setup(self)
 
             if 'text' in self.plugins[plugin].exports:
                 self._text_processors.append(plugin)
