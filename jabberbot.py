@@ -1,84 +1,102 @@
-import os
 import sys
 import time
-import subprocess
+import pprint
+import asyncio
 import telepot
+import importlib
 import telepot.async
-import requests
-import speech_recognition as sr
 
-from cobe.brain import Brain
-from gtts import gTTS
+
+def _dbg(msg, tag='INFO'):
+    msg = pprint.pformat(msg, indent=2)
+    print('''[{}] {}: {}'''.format(time.asctime(), tag, msg))
 
 
 class JabberBot(telepot.async.Bot):
     def __init__(self, *args, **kwargs):
+        self.config = kwargs['config']
+        del kwargs['config']
+
         super(JabberBot, self).__init__(*args, **kwargs)
+
         self._answerer = telepot.async.helper.Answerer(self)
-        self._message_with_inline_keyboard = None
 
-    async def on_chat_message(self, msg):
-        print(msg)
+        self.plugins = {}
+        self._text_processors = []
+        self._audio_processors = []
+        for plugins in self.config['plugins']:
+            path = 'plugins.{}'.format(plugin)
+            self.plugins[plugin] = importlib.import_module(path)
+            if 'text' in self.plugins[plugin].exports:
+                self._text_processors.append(plugin)
+            if 'audio' in self.plugins[plugin].exports:
+                self._audio_processors.append(plugin)
+
+    def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
-        print('Chat Message:', content_type, chat_type, chat_id)
 
-        if content_type == 'voice':
-            print('Voice file found, downloading...')#, end=' ')
-            file_id = msg['voice']['file_id']
+        if content_type == 'text':
+            chat = msg['chat']['id']
+            user = msg['from']['username']
+            content = msg['text']
 
-            # Download audio
-            path = self.getFile(file_id)['file_path']
-            audio_url = 'https://api.telegram.org/file/bot{}/{}'.format(self._token, path)
-            message_audio = 'voice/{}.ogg'.format(file_id)
+            if content[0] == '/':
+                command = content.split(' ')[0]
+                self._dispatch(command, msg)
+            else:
+                self._dispatch('text', msg)
+        elif content_type == 'voice':
+            self._dispatch('audio', msg)
 
-            with open(message_audio, 'wb') as f:
-                r = requests.get(audio_url)
-                f.write(r.content)
-
-            # Convert to flac
-            of = message_audio.replace('.ogg', '.aiff')
-            subprocess.check_call(['ffmpeg', '-i', message_audio, of],
-                                  stdout=open('stdout.log', 'w'),
-                                  stderr=open('stderr.log', 'w'),
-                                  close_fds=True)
-
-            print('Recognizing...')#, end=' ')
-            with sr.AudioFile(message_audio) as source:
-                audio = r.record(source)
-            incoming_message = r.recognize_google(audio)
-
-            # print('Learning...')#, end=' ')
-            # b.learn(incoming_message)
-
-            # print('Replying...')#, end=' ')
-            # b.reply(incoming_message)
-
-            # print('Speaking...')#, end=' ')
-            # reply_audio = gTTS(text=reply_text, lang='en')
-
-            print('Sending...')#, end=' ')
-            self._answerer.answer(msg, incoming_message)
-
-            print('Done.')
-
-    async def on_callback_query(self, msg):
+    def on_callback_query(self, msg):
+        # message = telepot.glance(msg, flavor='callback_query')
+        # query_id, from_id, query_data = message
+        # print('Callback Query:', query_id, from_id, query_data)
         pass
 
     def on_inline_query(self, msg):
+        # message = telepot.glance(msg, flavor='inline_query')
+        # query_id, from_id, query_string = message
+        # print('Inline Query:', query_id, from_id, query_string)
+
+        # def compute_answer():
+        #     articles = [{'type': 'article',
+        #                  'id': 'abc',
+        #                  'title': query_string,
+        #                  'message_text': query_string}]
+
+        #     return articles
+
+        # self._answerer.answer(msg, compute_answer)
         pass
 
     def on_chosen_inline_result(self, msg):
+        # message = telepot.glance(msg, flavor='chosen_inline_result')
+        # result_id, from_id, query_string = message
+        # print('Chosen Inline Result:', result_id, from_id, query_string)
         pass
+
+    def _dispatch(self, command, msg):
+        for plugin in self.plugins:
+            if command in plugins[plugin].exports:
+                func = plugins[plugin].exports[command]
+                func(msg, self)
 
 
 if __name__ == '__main__':
+    import json
+
+
     with open('token') as f:
         TOKEN = f.read().rstrip()
 
-    bot = JabberBot(TOKEN)
+    with open('jabberbot.cfg') as f:
+        config = json.loads(f.read())
+
+    bot = JabberBot(TOKEN, config)
+
     loop = asyncio.get_event_loop()
-
     loop.create_task(bot.message_loop())
-    print('Listening ...')
 
+    print('Listening (for real) ...')
     loop.run_forever()
