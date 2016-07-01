@@ -83,6 +83,9 @@ class JabberBot(telepot.async.Bot):
         with open(self.config_file, 'r') as f:
             self.config = json.load(f)
 
+        if 'debug' in self.config:
+            DEBUG = self.config['debug']
+
         self.plugins = {}
         self._text_processors = []
         self._audio_processors = []
@@ -111,13 +114,8 @@ if __name__ == '__main__':
 
     with open('token') as f:
         TOKEN = f.read().rstrip()
-    with open('jabberbot.cfg') as f:
-        config = json.loads(f.read())
 
-    if 'debug' in config:
-        DEBUG = config['debug']
-
-    bot = JabberBot(TOKEN, config=config)
+    bot = JabberBot(TOKEN, config='jabberbot.cfg')
 
     loop = asyncio.get_event_loop()
     loop.create_task(bot.message_loop())
