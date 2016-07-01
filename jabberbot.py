@@ -32,9 +32,19 @@ class JabberBot(telepot.async.Bot):
 
             if content[0] == '/':
                 command = content.split(' ')[0].lower()
-                if command == '/reload' and
+                if command == '/reload' and \
                    msg['from']['username'] == self.config['admin']:
-                await self._dispatch(command, msg)
+                    await self._dispatch(command, msg)
+                elif command == '/help':
+                    m_id = msg['message_id']
+                    args = content.split(' ')[1:]
+                    if len(args) > 0:
+                        if args[0] in self.plugins:
+                            reply = self.plugins[arg[0]].__docstring__
+                    else:
+                        plugin_list = ', '.join(self.plugins.keys())
+                        reply = 'Available plugins: {}'.format(plugin_list)
+                    self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
             else:
                 _dbg(msg)
                 await self._dispatch('text', msg)
