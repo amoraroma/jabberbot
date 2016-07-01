@@ -1,4 +1,5 @@
 import github
+from telepot import glance
 
 __author__ = 'sli'
 __version__ = '0.1'
@@ -11,18 +12,21 @@ class GithubPlugin(object):
     def __init__(self):
         self._github = github.Github()
 
-    def run(self, msg, bot):
-        command = msg.split(' ')[0]
-        args = msg.split(' ')[1:]
+    async def run(self, msg, bot):
+        command = msg['text'].split(' ')[0]
+        args = msg['text'].split(' ')[1:]
         if len(args) > 0:
             content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
-            repo = g.get_repo(args[0])
+            repo = self._github.get_repo(args[0])
             try:
-                reply = 'Repo: {}'.format(repo.html_url)
+                reply = '{}'.format(repo.html_url)
             except:
                 reply = 'Repo {} not found.'.format(args[0])
-            bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+        else:
+            reply = 'You must specify a Github repo.'
+
+        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
 
 p = GithubPlugin()
