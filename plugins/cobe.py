@@ -12,15 +12,14 @@ class CobePlugin(object):
     async def run(self, msg, tele):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
-        # self.brain.learn(msg['text'])
+        self.brain.learn(msg['text'])
         # reply = self.brain.reply(msg['text'])
-        reply = 'Hello, plugins!'
-        await tele.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+        # reply = 'Hello, plugins!'
+        # await tele.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def get_reply(self, incoming_msg, tele):
-        # self.brain.leanr(incoming_msg)
-        # reply = self.brain.reply(incoming_msg)
-        reply = 'Hello, plugin API!'
+        self.brain.learn(incoming_msg)
+        reply = self.brain.reply(incoming_msg)
         return reply
 
 p = CobePlugin()
