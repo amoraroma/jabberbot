@@ -1,4 +1,5 @@
 import time
+import random
 import asyncio
 import telepot
 import importlib
@@ -34,18 +35,23 @@ class JabberBot(telepot.async.Bot):
             if content[0] == '/':
                 command = content.split(' ')[0].lower()
                 if command == '/reload' and \
-                   msg['from']['username'] == self.config['admin']:
+                   msg['from']['id'] == self.config['admin']:
                     self.load()
+                    self.sendMessage(chat_id, 'Jabberbot reloaded!')
                 elif command == '/help':
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
                     if len(args) > 0:
                         if args[0] in self.plugins:
-                            reply = self.plugins[arg[0]].__docstring__
+                            reply = self.plugins[args[0]].__doc__
+                            reply = '```{}```'.format(reply)
                     else:
-                        plugin_list = ', '.join(self.plugins.keys())
-                        reply = 'Available plugins: {}'.format(plugin_list)
-                    self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+                        pl = list(self.plugins.keys())
+                        plugin_list = ', '.join(pl)
+                        reply = 'Available plugins: {}\n'.format(', '.join(pl))
+                        reply += 'Try: /help {}'.format(random.choice(pl))
+                        reply = '```{}```'.format(reply)
+                    await self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
                 else:
                     await self._dispatch(command, msg)
             else:
