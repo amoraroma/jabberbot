@@ -69,8 +69,8 @@ class JabberBot(telepot.async.Bot):
         # print('Chosen Inline Result:', result_id, from_id, query_string)
         pass
 
-    def load(self, config_file):
-        with open(config_file, 'r') as f:
+    def load(self):
+        with open(self.config_file, 'r') as f:
             self.config = json.load(f)
 
         self.plugins = {}
