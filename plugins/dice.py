@@ -4,6 +4,7 @@ from telepot import glance
 __author__ = 'sli'
 __version__ = '0.1'
 __doc__ = '''Rolls dice. Any dice.
+
 Commands:
   * /roll <dice> (Example: /roll 5d6)'''
 

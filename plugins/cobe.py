@@ -6,6 +6,7 @@ from cobe.brain import Brain
 __author__ = 'sli'
 __version__ = '0.1'
 __doc__ = '''Uses Cobe to learn grammar and generate responses. Unless silenced, it will respond to messages automatically.
+
 Commands:
   * /ask <text> - Get a reply. (Example: /ask tell me about clouds)'''
 

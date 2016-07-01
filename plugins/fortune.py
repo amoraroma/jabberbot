@@ -6,7 +6,8 @@ from telepot import glance
 
 __author__ = 'sli'
 __version__ = '0.1'
-__doc__ = '''Tells you your fortune.
+__doc__ = '''Tells you your fortune. Available sources are: {}
+
 Commands:
   * /fortune [source] (Example: /fortune starwars; /fortune)'''
 
@@ -35,12 +36,13 @@ class FortunePlugin(object):
                 for s in sources:
                     reply += ' * {}'.format(s)
         else:
-            source = random.choice(self.fortunes.keys())
+            source = random.choice(list(self.fortunes.keys()))
             reply = random.choice(self.fortunes[source])
         await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
 
 p = FortunePlugin()
+__doc__ = __doc__.format(', '.join(list(p.fortunes.keys())))
 
 exports = {
     'self': p,

@@ -4,6 +4,7 @@ from telepot import glance
 __author__ = 'sli'
 __version__ = '0.1'
 __doc__ = '''Links the specified Github repository.
+
 Commands:
   * /github <repo> (Example: /github sli/jabberbot)'''
 

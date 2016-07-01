@@ -8,6 +8,7 @@ from telepot import glance
 __author__ = 'sli'
 __version__ = '0.1'
 __doc__ = '''Saves and recalls quotes from other users.
+
 Commands:
   * /quote [username] (Example: /quote sli; /quote)'''
 
