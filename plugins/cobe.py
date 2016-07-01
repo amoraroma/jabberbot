@@ -15,11 +15,10 @@ class CobePlugin(object):
         self.brain = Brain('data/jabberbot.brain')
 
     async def run(self, msg, bot):
-        content_type, chat_type, chat_id = glance(msg)
+        # content_type, chat_type, chat_id = glance(msg)
         # m_id = msg['message_id']
         self.brain.learn(msg['text'])
         # reply = self.brain.reply(msg['text'])
-        # reply = 'Hello, plugins!'
         # await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def get_reply(self, incoming_msg, bot):
