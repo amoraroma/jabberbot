@@ -15,26 +15,12 @@ def _dbg(msg, tag='INFO'):
 
 class JabberBot(telepot.async.Bot):
     def __init__(self, *args, **kwargs):
-        self.config = kwargs['config']
+        self.config_file = kwargs['config']
         del kwargs['config']
 
         super(JabberBot, self).__init__(*args, **kwargs)
-
         self._answerer = telepot.async.helper.Answerer(self)
-
-        self.plugins = {}
-        self._text_processors = []
-        self._audio_processors = []
-        for plugin in self.config['plugins']:
-            path = 'plugins.{}'.format(plugin)
-            self.plugins[plugin] = importlib.import_module(path)
-
-            if 'text' in self.plugins[plugin].exports:
-                self._text_processors.append(plugin)
-            if 'audio' in self.plugins[plugin].exports:
-                self._audio_processors.append(plugin)
-
-            _dbg('Loaded plugin: {}'.format(plugin), 'SYS')
+        self.load()
 
     async def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
@@ -46,6 +32,8 @@ class JabberBot(telepot.async.Bot):
 
             if content[0] == '/':
                 command = content.split(' ')[0].lower()
+                if command == '/reload' and
+                   msg['from']['username'] == self.config['admin']:
                 await self._dispatch(command, msg)
             else:
                 _dbg(msg)
@@ -80,6 +68,24 @@ class JabberBot(telepot.async.Bot):
         # result_id, from_id, query_string = message
         # print('Chosen Inline Result:', result_id, from_id, query_string)
         pass
+
+    def load(self, config_file):
+        with open(config_file, 'r') as f:
+            self.config = json.load(f)
+
+        self.plugins = {}
+        self._text_processors = []
+        self._audio_processors = []
+        for plugin in self.config['plugins']:
+            path = 'plugins.{}'.format(plugin)
+            self.plugins[plugin] = importlib.import_module(path)
+
+            if 'text' in self.plugins[plugin].exports:
+                self._text_processors.append(plugin)
+            if 'audio' in self.plugins[plugin].exports:
+                self._audio_processors.append(plugin)
+
+            _dbg('Loaded plugin: {}'.format(plugin), 'SYS')
 
     async def _dispatch(self, command, msg):
         for plugin in self.plugins:
