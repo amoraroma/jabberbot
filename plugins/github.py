@@ -1,4 +1,4 @@
-import requests
+import github
 
 __author__ = 'sli'
 __version__ = '0.1'
@@ -9,10 +9,20 @@ Commands:
 
 class GithubPlugin(object):
     def __init__(self):
-        pass
+        self._github = github.Github()
 
     def run(self, msg, bot):
-        pass
+        command = msg.split(' ')[0]
+        args = msg.split(' ')[1:]
+        if len(args) > 0:
+            content_type, chat_type, chat_id = glance(msg)
+            m_id = msg['message_id']
+            repo = g.get_repo(args[0])
+            try:
+                reply = 'Repo: {}'.format(repo.html_url)
+            except:
+                reply = 'Repo {} not found.'.format(args[0])
+            bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
 
 p = GithubPlugin()
