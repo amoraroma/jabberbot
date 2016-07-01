@@ -1,0 +1,2 @@
+-e git+https://github.com/sli/cobe.git#egg=cobe
+dice==1.0.3
