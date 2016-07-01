@@ -65,8 +65,8 @@ class MediaSnagPlugin(object):
             found = glob.glob('data/mediasnag/*-{}.mp3'.format(v_id))
             if len(found) == 0:
                 await bot.sendAudio(chat_id, 'One sec, I gotta snag it first.', reply_to_message_id=m_id)
+                bot._dbg('Snagging audio from {}...'.format(v_id), tag='PLUGIN', level=2)
                 with youtube_dl.YoutubeDL(self._ydl_opts) as ydl:
-                    bot._dbg('Snagging audio from {}...'.format(v_id), tag='PLUGIN')
                     ydl.download([url])
                 fn = glob.glob('data/mediasnag/*-{}.mp3'.format(v_id))[0]
             else:
@@ -75,7 +75,7 @@ class MediaSnagPlugin(object):
 
             title = os.path.basename(fn).replace('-{}.mp3'.format(v_id), '')
 
-            self._dbg('Sending audio...', tag='PLUGIN')
+            self._dbg('Sending audio...', tag='PLUGIN', level=2)
             await bot.sendChatAction(chat_id, 'upload_audio')
             with open(fn, 'rb') as f:
                 await bot.sendAudio(chat_id, f, title=title, reply_to_message_id=m_id)
