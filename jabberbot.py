@@ -7,12 +7,15 @@ import telepot.async
 
 
 __version__ = '0.1'
-DEBUG = True
+DEBUG = 1
 
 
-def _dbg(msg, tag='INFO'):
-    if DEBUG:
+def _dbg(msg, tag='INFO', level=0):
+    global DEBUG
+    
+    if level <= DEBUG:
         print('''[{}] [{}] {}'''.format(time.asctime(), tag, msg))
+
 
 
 class JabberBot(telepot.async.Bot):
@@ -21,6 +24,7 @@ class JabberBot(telepot.async.Bot):
         del kwargs['config']
 
         super(JabberBot, self).__init__(*args, **kwargs)
+        self._dbg = _dbg
         self._answerer = telepot.async.helper.Answerer(self)
         self.load()
 
@@ -36,6 +40,7 @@ class JabberBot(telepot.async.Bot):
                 command = content.split(' ')[0].lower()
                 if command == '/reload' and \
                    msg['from']['id'] == self.config['admin']:
+                    del self.plugins
                     self.load()
                     await self.sendMessage(chat_id, 'Jabberbot reloaded!')
                 elif command in ['/help', '/start']:
@@ -90,7 +95,7 @@ class JabberBot(telepot.async.Bot):
             self.config = json.load(f)
 
         if 'debug' in self.config:
-            DEBUG = self.config['debug']
+            DEBUG = int(self.config['debug'])
 
         self.plugins = {}
         self._text_processors = []
@@ -111,7 +116,7 @@ class JabberBot(telepot.async.Bot):
         for plugin in self.plugins:
             if command in self.plugins[plugin].exports:
                 _dbg('Invoking {} for command {}.'.format(plugin, command),
-                     'PLUGIN')
+                     tag='PLUGIN', level=2)
                 func = self.plugins[plugin].exports[command]
                 await func(msg, self)
 
