@@ -57,6 +57,6 @@ p = CobePlugin()
 
 exports = {
     'self': p,
-    'text': p.run
+    'text': p.run,
     '/ask': p.ask
 }
