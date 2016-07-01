@@ -7,7 +7,9 @@ from telepot import glance
 
 __author__ = 'sli'
 __version__ = '0.1'
-__doc__ = '''Tells you your fortune. Available sources are: {}. This fortune might have super cow powers.
+__doc__ = '''Tells you your fortune. Available sources are: {}
+
+This fortune might have super cow powers.
 
 Commands:
   * /fortune [source] (Example: /fortune {}; /fortune)'''
@@ -37,7 +39,6 @@ class FortunePlugin(object):
             if 'fortune' in bot.config:
                 dcs = bot.config['fortune'].get('disabled-cows', [])
                 for dc in dcs:
-                    print('remove: {}'.format(dc))
                     self._cowfigs.remove(dc)
         except:
             self._cowfigs = []
