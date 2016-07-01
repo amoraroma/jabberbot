@@ -2,6 +2,7 @@ import os
 from telepot import glance
 from cobe.brain import Brain
 
+
 class CobePlugin(object):
     def __init__(self):
         if not os.path.isfile('data/jabberbot.brain'):
@@ -11,7 +12,7 @@ class CobePlugin(object):
 
     async def run(self, msg, tele):
         content_type, chat_type, chat_id = glance(msg)
-        m_id = msg['message_id']
+        # m_id = msg['message_id']
         self.brain.learn(msg['text'])
         # reply = self.brain.reply(msg['text'])
         # reply = 'Hello, plugins!'

@@ -1,3 +1,6 @@
+import time
+import requests
+import subprocess
 import speech_recognition as sr
 from telepot import glance
 from gtts import gTTS
@@ -12,7 +15,8 @@ class TalkBackPlugin(object):
         m_id = msg['message_id']
         file_id = msg['voice']['file_id']
         path = self.getFile(file_id)['file_path']
-        audio_url = 'https://api.telegram.org/file/bot{}/{}'.format(self._token, path)
+        audio_url = 'https://api.telegram.org/file/bot{}/{}'
+        audio_url = audio_url.format(self._token, path)
         message_audio = 'voice/{}.ogg'.format(file_id)
 
         with open(message_audio, 'wb') as f:
@@ -21,9 +25,9 @@ class TalkBackPlugin(object):
 
         of = message_audio.replace('.ogg', '.flac')
         subprocess.check_call(['ffmpeg', '-i', message_audio, of],
-                               stdout=open('stdout.log', 'w'),
-                               stderr=open('stderr.log', 'w'),
-                               close_fds=True)
+                              stdout=open('stdout.log', 'w'),
+                              stderr=open('stderr.log', 'w'),
+                              close_fds=True)
 
         with sr.AudioFile(message_audio) as source:
             audio = self._recog.record(source)
@@ -43,6 +47,6 @@ class TalkBackPlugin(object):
 p = TalkBackPlugin()
 
 exports = {
-    'self': p
+    'self': p,
     'audio': p.run
 }

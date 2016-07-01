@@ -1,6 +1,4 @@
-import sys
 import time
-import pprint
 import asyncio
 import telepot
 import importlib
@@ -8,6 +6,7 @@ import telepot.async
 
 
 DEBUG = False
+
 
 def _dbg(msg, tag='INFO'):
     if DEBUG:
@@ -41,8 +40,8 @@ class JabberBot(telepot.async.Bot):
         content_type, chat_type, chat_id = telepot.glance(msg)
 
         if content_type == 'text':
-            chat = msg['chat']['id']
-            user = msg['from']['username']
+            # chat = msg['chat']['id']
+            # user = msg['from']['username']
             content = msg['text']
 
             if content[0] == '/':

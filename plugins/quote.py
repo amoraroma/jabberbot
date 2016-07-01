@@ -29,8 +29,9 @@ class QuotePlugin(object):
             self.flush()
         else:
             # send quote
-            command = msg['text'].split(' ')[0]
+            # command = msg['text'].split(' ')[0]
             args = msg['text'].split(' ')[1:]
+            m_id = msg['message_id']
 
             if len(self.quotes) > 0:
                 if len(args) > 0:
@@ -40,10 +41,13 @@ class QuotePlugin(object):
                 else:
                     quote = random.choice(self.quotes)
 
-                reply = '{}\n--{} (Added by {} [@{}])'.format(quote[2],
-                                                              quote[1][2],
-                                                              quote[1][1])
-                await tele.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+                q_text = quote[2]
+                q_sname = quote[0]
+                q_aname = quote[1]
+                reply = '{}\n'.format(q_text)
+                reply += '--{} (Added by @{})'.format(q_sname, q_aname)
+                await tele.sendMessage(chat_id, reply,
+                                       reply_to_message_id=m_id)
 
     def get_quotes_by(self, name, chat_id):
         return [q for q in self.quotes[chat_id] if name in q[0]]
