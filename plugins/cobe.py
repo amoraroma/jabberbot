@@ -4,10 +4,10 @@ from cobe.brain import Brain
 
 class CobePlugin(object):
     def __init__(self):
-        if not os.path.isfile('jabberbot.brain'):
-            Brain.init('jabberbot.brain')
+        if not os.path.isfile('data/jabberbot.brain'):
+            Brain.init('data/jabberbot.brain')
 
-        self.brain = Brain('jabberbot.brain')
+        self.brain = Brain('data/jabberbot.brain')
 
     async def run(self, msg, tele):
         content_type, chat_type, chat_id = glance(msg)
