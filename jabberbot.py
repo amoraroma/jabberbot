@@ -38,24 +38,21 @@ class JabberBot(telepot.async.Bot):
                    msg['from']['id'] == self.config['admin']:
                     self.load()
                     self.sendMessage(chat_id, 'Jabberbot reloaded!')
-                elif command == '/help':
+                elif command in ['/help', '/start']:
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
                     if len(args) > 0:
                         if args[0] in self.plugins:
                             reply = self.plugins[args[0]].__doc__
-                            reply = '```{}```'.format(reply)
                     else:
                         pl = list(self.plugins.keys())
                         plugin_list = ', '.join(pl)
                         reply = 'Available plugins: {}\n'.format(', '.join(pl))
                         reply += 'Try: /help {}'.format(random.choice(pl))
-                        reply = '```{}```'.format(reply)
                     await self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
                 else:
                     await self._dispatch(command, msg)
             else:
-                _dbg(msg)
                 await self._dispatch('text', msg)
         elif content_type == 'voice':
             await self._dispatch('audio', msg)
