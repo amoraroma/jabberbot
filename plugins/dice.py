@@ -21,7 +21,9 @@ class DicePlugin(object):
         except:
             return
 
-        if len(roll) > 100:
+        if isinstance(roll, int):
+            reply = 'Total: {}'.format(roll)
+        elif len(roll) > 100:
             reply = 'Come, now. That\'s a silly number of rolls.'
         else:
             rolls = ', '.join([str(r) for r in roll])
