@@ -5,7 +5,8 @@ import importlib
 import telepot.async
 
 
-DEBUG = False
+__version__ = '0.1'
+DEBUG = True
 
 
 def _dbg(msg, tag='INFO'):
@@ -34,7 +35,7 @@ class JabberBot(telepot.async.Bot):
                 command = content.split(' ')[0].lower()
                 if command == '/reload' and \
                    msg['from']['username'] == self.config['admin']:
-                    await self._dispatch(command, msg)
+                    self.load()
                 elif command == '/help':
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
@@ -45,6 +46,8 @@ class JabberBot(telepot.async.Bot):
                         plugin_list = ', '.join(self.plugins.keys())
                         reply = 'Available plugins: {}'.format(plugin_list)
                     self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+                else:
+                    await self._dispatch(command, msg)
             else:
                 _dbg(msg)
                 await self._dispatch('text', msg)
@@ -114,6 +117,8 @@ if __name__ == '__main__':
 
     with open('token') as f:
         TOKEN = f.read().rstrip()
+
+    print(':: Jabberbot v{}\n'.format(__version__))
 
     bot = JabberBot(TOKEN, config='jabberbot.cfg')
 
