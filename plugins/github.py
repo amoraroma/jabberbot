@@ -13,6 +13,9 @@ class GithubPlugin(object):
     def __init__(self):
         self._github = github.Github()
 
+    def setup(self, bot):
+        pass
+
     async def run(self, msg, bot):
         command = msg['text'].split(' ')[0]
         args = msg['text'].split(' ')[1:]

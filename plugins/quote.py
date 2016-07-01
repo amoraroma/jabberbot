@@ -22,6 +22,9 @@ class QuotePlugin(object):
         with open('data/quotes', 'r') as f:
             self.quotes = json.load(f)
 
+    def setup(self, bot):
+        pass
+
     async def run(self, msg, bot):
         content_type, chat_type, chat_id = glance(msg)
         if 'forward_from' in msg:

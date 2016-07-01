@@ -19,6 +19,9 @@ class CobePlugin(object):
         self.brain = Brain('data/jabberbot.brain')
         self.silent = None
 
+    def setup(self, bot):
+        pass
+
     async def run(self, msg, bot):
         # Don't learn URLs.
         if 'entities' in msg:

@@ -13,6 +13,9 @@ class DicePlugin(object):
     def __init__(self):
         pass
 
+    def setup(self, bot):
+        pass
+
     async def run(self, msg, bot):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
