@@ -5,6 +5,12 @@ import atexit
 
 from telepot import glance
 
+__author__ = 'sli'
+__version__ = '0.1'
+__doc__ = '''Saves and recalls quotes from other users.
+Commands:
+  * /quote [username] (Example: /quote sli; /quote)'''
+
 
 class QuotePlugin(object):
     def __init__(self):
@@ -15,7 +21,7 @@ class QuotePlugin(object):
         with open('data/quotes', 'r') as f:
             self.quotes = json.load(f)
 
-    async def run(self, msg, tele):
+    async def run(self, msg, bot):
         content_type, chat_type, chat_id = glance(msg)
         if 'forward_from' in msg:
             # add quote
@@ -46,7 +52,7 @@ class QuotePlugin(object):
                 q_aname = quote[1]
                 reply = '{}\n'.format(q_text)
                 reply += '--{} (Added by @{})'.format(q_sname, q_aname)
-                await tele.sendMessage(chat_id, reply,
+                await bot.sendMessage(chat_id, reply,
                                        reply_to_message_id=m_id)
 
     def get_quotes_by(self, name, chat_id):
