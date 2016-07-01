@@ -1,2 +1,5 @@
 /token
 __pycache__
+*.brain
+*.brain-journal
+src/
