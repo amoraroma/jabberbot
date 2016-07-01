@@ -1,4 +1,5 @@
 import dice
+from telepot import glance
 
 
 class DicePlugin(object):
@@ -7,14 +8,20 @@ class DicePlugin(object):
 
     async def run(self, msg, tele):
         content_type, chat_type, chat_id = glance(msg)
+        m_id = msg['message_id']
+        roll_cmd = msg['text'].split(' ')[1]
         try:
-            roll = dice.roll(msg['text'])
+            roll = dice.roll(roll_cmd)
         except:
             return
 
-        roll_values = [random.randint(1, sides+1) for r in range(rolls)]
-        reply = 'Your rolls: {}\nTotal: {}'.format(', '.join(roll),
-                                                   sum(roll))
+        if len(roll) > 50:
+            reply = 'Come, now. That\'s a silly number of rolls.'
+        else:
+            rolls = ', '.join([str(r) for r in roll])
+            total = str(sum(roll))
+            reply = 'Your rolls: {}\nTotal: {}'.format(rolls, total)
+
         await tele.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
 

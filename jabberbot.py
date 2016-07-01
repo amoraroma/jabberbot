@@ -10,7 +10,6 @@ import telepot.async
 DEBUG = False
 
 def _dbg(msg, tag='INFO'):
-    # msg = pprint.pformat(msg, indent=2)
     if DEBUG:
         print('''[{}] [{}] {}'''.format(time.asctime(), tag, msg))
 
@@ -23,6 +22,8 @@ class JabberBot(telepot.async.Bot):
         super(JabberBot, self).__init__(*args, **kwargs)
 
         self._answerer = telepot.async.helper.Answerer(self)
+
+        self.term = blessings.Terminal()
 
         self.plugins = {}
         self._text_processors = []
@@ -87,7 +88,7 @@ class JabberBot(telepot.async.Bot):
         for plugin in self.plugins:
             if command in self.plugins[plugin].exports:
                 _dbg('Invoking {} for command {}.'.format(plugin, command),
-                     'PLUGIN')
+                     self.term, 'PLUGIN')
                 func = self.plugins[plugin].exports[command]
                 await func(msg, self)
 
