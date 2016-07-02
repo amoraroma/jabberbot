@@ -54,7 +54,7 @@ class QuotePlugin(object):
             else:
                 quote = random.choice(self.quotes)
 
-            reply = '{2}\n--{0} (Added by @{1})'.format(*quote)
+            reply = '{2}\n--{0} (Added by {1})'.format(*quote)
             await bot.sendMessage(chat_id, reply,
                                    reply_to_message_id=m_id)
 
