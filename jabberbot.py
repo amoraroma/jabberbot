@@ -54,12 +54,14 @@ class JabberBot(telepot.async.Bot):
                     if not atuser == self.config['username'].lower():
                         return
 
-                if command == '/reload' and \
-                   msg['from']['id'] == self.config['admin']:
-                    del self.plugins
-                    _dbg('', level=1)
-                    self.load()
-                    await self.sendMessage(chat_id, 'Jabberbot reloaded!')
+                if msg['from']['id'] == self.config['admin']:
+                    if command == '/reload':
+                        del self.plugins
+                        _dbg('', level=1)
+                        self.load()
+                        await self.sendMessage(chat_id, 'Jabberbot reloaded!')
+                    elif command == '/quit':
+                        await self.sendMessage(chat_id, '-- jabberbot.')
                 elif command in ['/help', '/start']:
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
@@ -110,11 +112,16 @@ class JabberBot(telepot.async.Bot):
         pass
 
     def load(self):
+        global DEBUG, __prompt__
+
         with open(self.config_file, 'r') as f:
             self.config = json.load(f)
 
         if 'debug' in self.config:
             DEBUG = int(self.config['debug'])
+
+        if 'prompt' in self.config:
+            __prompt__ = int(self.config['prompt'])
 
         self.plugins = {}
         for plugin in self.config['plugins']:
