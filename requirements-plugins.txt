@@ -2,3 +2,4 @@
 dice==1.0.3
 youtube-dl==2016.7.2
 PyGithub==1.26.0
+soundscrape==0.26.2
