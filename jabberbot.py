@@ -51,7 +51,8 @@ class JabberBot(telepot.async.Bot):
                 if command == '/reload' and \
                    msg['from']['id'] == self.config['admin']:
                     del self.plugins
-                    await self.load()
+                    print()
+                    self.load()
                     await self.sendMessage(chat_id, 'Jabberbot reloaded!')
                 elif command in ['/help', '/start']:
                     m_id = msg['message_id']
@@ -113,13 +114,17 @@ class JabberBot(telepot.async.Bot):
         for plugin in self.config['plugins']:
             path = 'plugins.{}'.format(plugin)
             self.plugins[plugin] = importlib.import_module(path)
-            self.plugins[plugin].exports['self'].setup(self)
-
             version = self.plugins[plugin].__version__
             author = self.plugins[plugin].__author__
             _dbg('Loaded plugin: {} v{} ({})'.format(plugin,
-                                                      version,
-                                                      author), 'SYS')
+                                                       version,
+                                                       author), 'SYS')
+
+        print()
+
+        for plugin in self.config['plugins']:
+            self.plugins[plugin].exports['self'].setup(self)
+            print()
 
     async def _dispatch(self, command, msg):
         for plugin in self.plugins:
