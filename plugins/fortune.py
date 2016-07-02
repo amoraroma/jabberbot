@@ -73,8 +73,9 @@ class FortunePlugin(object):
             source = random.choice(list(self.fortunes.keys()))
             reply = random.choice(self.fortunes[source])
 
-        lucky = [str(random.randint(1, 101)) for i in range(6)]
-        reply += '\n\nLucky numbers: {}'.format(', '.join(lucky))
+        if source == 'cookie':
+            lucky = [str(random.randint(1, 101)) for i in range(6)]
+            reply += '\n\nLucky numbers: {}'.format(', '.join(lucky))
 
         if '-c' in args and len(self._cowfigs) > 0:
             fig = random.choice(self._cowfigs)
