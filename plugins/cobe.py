@@ -30,16 +30,16 @@ class CobePlugin(object):
             self.lusers = json.load(f)
 
     def setup(self, bot):
+        self._dbg = bot._dbg
+
         if not 'cobe' in bot.config:
             bot.config['cobe'] = {}
 
         ccfg = bot.config['cobe']
         self.silent = ccfg.get('silent', True)
 
-        self._dbg = bot._dbg
-
         if os.path.isfile('data/cobe/train.txt'):
-            self._dbg('Training file found.', tag='PLUGIN')
+            self._dbg('Training file found.', tag='PLUGIN', level=2)
             self.brain.start_batch_learning()
             with open('data/cobe/train.txt') as f:
                 lines = f.read().split('\n')
@@ -50,7 +50,7 @@ class CobePlugin(object):
             dst = 'data/cobe/train.txt.{}'.format(len(t_files))
             os.rename('data/cobe/train.txt', dst)
             self._dbg('Training complete. Training file moved to {}.'
-                      .format(os.path.basename(dst)))
+                      .format(os.path.basename(dst)), level=2)
 
     async def run(self, msg, bot):
         # Don't learn URLs.
@@ -63,6 +63,10 @@ class CobePlugin(object):
 
         m_type = msg['chat']['type']
         u_id = 'id_' + str(msg['from']['id'])
+
+        if not u_id in self.lusers:
+            self.lusers[u_id] = False
+            self._flush()
 
         if (not self.silent or \
            (m_type == 'private' and self.lusers[u_id])) and \
@@ -105,7 +109,6 @@ class CobePlugin(object):
             reply = 'Chat is: {}'.format(ch)
             await bot.sendMessage(chat_id, reply)
 
-        print(self.lusers)
         self._flush()
 
     def get_reply(self, incoming_msg, bot):
