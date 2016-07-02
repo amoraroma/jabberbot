@@ -85,7 +85,10 @@ class MediaSnagPlugin(object):
             os.mkdir('data/mediasnag')
 
         if url_p.netloc in ['youtube.com', 'youtu.be']:
-            v_id = up.parse_qs(url_p.query)['v'][0]
+            if url_p.netloc == 'youtu.be':
+                v_id = url_p.path[1:]
+            else:
+                v_id = up.parse_qs(url_p.query)['v'][0]
             found = glob.glob('data/mediasnag/*-{}.mp3'.format(v_id))
 
             if len(found) == 0:
