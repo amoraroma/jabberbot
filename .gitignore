@@ -3,3 +3,4 @@ __pycache__
 *.brain
 *.brain-journal
 src/
+data/mediasnag/
