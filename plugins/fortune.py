@@ -7,7 +7,7 @@ import subprocess
 from telepot import glance
 
 __author__ = 'sli'
-__version__ = '0.1'
+__version__ = '0.2'
 
 try:
     subprocess.call(['cowsay'])
@@ -74,7 +74,8 @@ class FortunePlugin(object):
             reply = random.choice(self.fortunes[source])
 
         if source == 'cookie':
-            lucky = [str(random.randint(1, 101)) for i in range(6)]
+            lucky = [str(random.randint(1, 70)) for i in range(5)]
+            lucky.append(str(random.randint(1, 27)))
             reply += '\n\nLucky numbers: {}'.format(', '.join(lucky))
 
         if '-c' in args and len(self._cowfigs) > 0:

@@ -7,6 +7,8 @@ import telepot.async
 
 
 __version__ = '0.2'
+__banner__ = ':: Jabberbot'
+
 DEBUG = 1
 
 
@@ -127,13 +129,13 @@ if __name__ == '__main__':
     with open('token') as f:
         TOKEN = f.read().rstrip()
 
-    print(':: Jabberbot v{}\n'.format(__version__))
+    print('{} v{}\n'.format(__banner__, __version__))
 
     bot = JabberBot(TOKEN, config='jabberbot.cfg')
 
     loop = asyncio.get_event_loop()
     loop.create_task(bot.message_loop())
 
-    _dbg(':: Jabberbot ready.')
+    _dbg('{} ready.'.format(__banner__))
 
     loop.run_forever()
