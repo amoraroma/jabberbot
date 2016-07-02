@@ -45,6 +45,7 @@ class CobePlugin(object):
             with open('data/cobe/train.txt') as f:
                 lines = f.read().split('\n')
                 for line in lines:
+                    line = line.lower().replace('"', '')
                     self.brain.learn(line)
             self.brain.stop_batch_learning()
             t_files = glob.glob('data/cobe/train.txt.*')
@@ -60,7 +61,7 @@ class CobePlugin(object):
                 if e['type'] == 'url':
                     return
 
-        self.brain.learn(msg['text'])
+        self.brain.learn(msg['text'].lower().replace('"', ''))
 
         m_type = msg['chat']['type']
         u_id = 'id_' + str(msg['from']['id'])
