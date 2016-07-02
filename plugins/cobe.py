@@ -10,7 +10,8 @@ __version__ = '0.1'
 __doc__ = '''Uses Cobe to learn grammar and generate responses. Unless silenced, it will respond to messages automatically.
 
 Commands:
-  * /ask <text> - Get a reply. (Example: /ask tell me about clouds)'''
+  * /ask <text> - Get a reply. (Example: /ask tell me about clouds)
+  * /? - Shortcut for /ask.'''
 
 
 class CobePlugin(object):
@@ -126,5 +127,6 @@ exports = {
     'self': p,
     'text': p.run,
     '/ask': p.ask,
+    '/?': p.ask,
     '/chat': p.chat
 }
