@@ -121,7 +121,7 @@ class JabberBot(telepot.async.Bot):
             DEBUG = int(self.config['debug'])
 
         if 'prompt' in self.config:
-            __prompt__ = int(self.config['prompt'])
+            __prompt__ = self.config['prompt']
 
         self.plugins = {}
         for plugin in self.config['plugins']:
