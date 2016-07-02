@@ -89,7 +89,7 @@ class MediaSnagPlugin(object):
                 v_id = url_p.path[1:]
             else:
                 v_id = up.parse_qs(url_p.query)['v'][0]
-            found = glob.glob('data/mediasnag/*-{}.mp3'.format(v_id))
+            found = glob.glob('data/mediasnag/youtube/*-{}.mp3'.format(v_id))
 
             if len(found) == 0:
                 bot._dbg('Snagging audio from {}...'.format(v_id), tag='PLUGIN', level=2)
@@ -98,7 +98,7 @@ class MediaSnagPlugin(object):
                 with youtube_dl.YoutubeDL(self._ydl_opts) as ydl:
                     ydl.download([url])
 
-                fn = glob.glob('data/mediasnag/*-{}.mp3'.format(v_id))[0]
+                fn = glob.glob('data/mediasnag/youtube/*-{}.mp3'.format(v_id))[0]
             else:
                 bot._dbg('Sending cached audio for {}...'.format(v_id), tag='PLUGIN', level=2)
                 await bot.sendMessage(chat_id, 'Already snagged that one. Lemme send it.', reply_to_message_id=m_id)
@@ -139,7 +139,7 @@ class MediaSnagPlugin(object):
             await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def _progress(self, d):
-        self._dbg('YDL Status: {}'.format(d['status']), tag='PLUGIN', level=3)
+        self._dbg('YDL Status: {}'.format(d['status']), tag='PLUGIN', level=4)
         if d['status'] != 'downloading':
             self._dbg('YDL Status: {}'.format(d['status']), tag='PLUGIN', level=2)
 
