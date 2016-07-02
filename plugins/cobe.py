@@ -59,9 +59,7 @@ class CobePlugin(object):
                 if e['type'] == 'url':
                     return
 
-        if 'forward_from' not in msg and \
-           'reply_to_message' not in msg:
-            self.brain.learn(msg['text'])
+        self.brain.learn(msg['text'])
 
         m_type = msg['chat']['type']
         u_id = 'id_' + str(msg['from']['id'])
