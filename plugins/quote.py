@@ -10,7 +10,7 @@ __version__ = '0.1'
 __doc__ = '''Saves and recalls quotes from other users.
 
 Commands:
-  * /quote [username] (Example: /quote sli; /quote)'''
+  * /quote [first name] (Example: /quote sli; /quote)'''
 
 
 class QuotePlugin(object):
