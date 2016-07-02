@@ -61,8 +61,8 @@ class JabberBot(telepot.async.Bot):
                     await self._dispatch(command, msg)
             else:
                 await self._dispatch('text', msg)
-        elif content_type == 'voice':
-            await self._dispatch('audio', msg)
+        else:
+            await self._dispatch(content_type, msg)
 
     def on_callback_query(self, msg):
         # message = telepot.glance(msg, flavor='callback_query')
@@ -100,17 +100,10 @@ class JabberBot(telepot.async.Bot):
             DEBUG = int(self.config['debug'])
 
         self.plugins = {}
-        self._text_processors = []
-        self._audio_processors = []
         for plugin in self.config['plugins']:
             path = 'plugins.{}'.format(plugin)
             self.plugins[plugin] = importlib.import_module(path)
             self.plugins[plugin].exports['self'].setup(self)
-
-            if 'text' in self.plugins[plugin].exports:
-                self._text_processors.append(plugin)
-            if 'audio' in self.plugins[plugin].exports:
-                self._audio_processors.append(plugin)
 
             _dbg('Loaded plugin: {}'.format(plugin), 'SYS')
 
