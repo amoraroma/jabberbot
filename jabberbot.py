@@ -7,7 +7,8 @@ import telepot.async
 
 
 __version__ = '0.2'
-__banner__ = ':: Jabberbot'
+__prompt__ = '::'
+__banner__ = 'Jabberbot'
 
 DEBUG = 1
 
@@ -16,8 +17,11 @@ def _dbg(msg, tag='INFO', level=0):
     global DEBUG
     
     if level <= DEBUG:
-        print('''[{}] [{}] {}'''.format(time.asctime(), tag, msg))
-
+        if msg == '':
+            tag = '\\\\/'
+        tag = '[{}]'.format(tag).rjust(6)
+        print('[{}] {} {} {}'.format(time.asctime(), tag,
+                                     __prompt__, msg))
 
 
 class JabberBot(telepot.async.Bot):
@@ -51,7 +55,7 @@ class JabberBot(telepot.async.Bot):
                 if command == '/reload' and \
                    msg['from']['id'] == self.config['admin']:
                     del self.plugins
-                    print()
+                    _dbg('', level=1)
                     self.load()
                     await self.sendMessage(chat_id, 'Jabberbot reloaded!')
                 elif command in ['/help', '/start']:
@@ -66,7 +70,7 @@ class JabberBot(telepot.async.Bot):
                         pl.sort()
                         plugin_list = ', '.join(pl)
                         reply = 'Available plugins: {}\n'.format(', '.join(pl))
-                        reply += 'Try: /help {}'.format(random.choice(pl))
+                        reply += 'Try: /help {}, or any other plugin.'.format(random.choice(pl))
                         await self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
                 else:
                     await self._dispatch(command, msg)
@@ -117,14 +121,13 @@ class JabberBot(telepot.async.Bot):
             version = self.plugins[plugin].__version__
             author = self.plugins[plugin].__author__
             _dbg('Loaded plugin: {} v{} ({})'.format(plugin,
-                                                       version,
-                                                       author), 'SYS')
+                                                     version,
+                                                     author), 'SYS')
 
-        print()
-
+        _dbg('', level=1)
         for plugin in self.config['plugins']:
             self.plugins[plugin].exports['self'].setup(self)
-            print()
+        _dbg('', level=1)
 
     async def _dispatch(self, command, msg):
         for plugin in self.plugins:
@@ -141,13 +144,11 @@ if __name__ == '__main__':
     with open('token') as f:
         TOKEN = f.read().rstrip()
 
-    print('{} v{}\n'.format(__banner__, __version__))
-
     bot = JabberBot(TOKEN, config='jabberbot.cfg')
 
     loop = asyncio.get_event_loop()
     loop.create_task(bot.message_loop())
 
-    _dbg('{} ready.'.format(__banner__))
+    _dbg('{} v{} ready.'.format(__banner__, __version__))
 
     loop.run_forever()
