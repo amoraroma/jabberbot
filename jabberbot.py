@@ -6,7 +6,7 @@ import importlib
 import telepot.async
 
 
-__version__ = '0.1'
+__version__ = '0.2'
 DEBUG = 1
 
 
