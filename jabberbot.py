@@ -134,6 +134,6 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.create_task(bot.message_loop())
 
-    _dbg('Listening ...')
+    _dbg(':: Jabberbot ready.')
 
     loop.run_forever()
