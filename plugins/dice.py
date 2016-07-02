@@ -19,9 +19,9 @@ class DicePlugin(object):
     async def run(self, msg, bot):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
-        roll_cmd = msg['text'].split(' ')[1]
+        roll_cmd = msg['text'].split(' ')
         try:
-            roll = dice.roll(roll_cmd)
+            roll = dice.roll(roll_cmd[0])
         except:
             return
 
