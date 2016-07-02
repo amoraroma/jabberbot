@@ -10,7 +10,7 @@ __version__ = '0.2'
 __prompt__ = '::'
 __banner__ = 'Jabberbot'
 
-_started = time.time()
+# _started = time.time()
 
 DEBUG = 3
 _longest_tag = 6
@@ -39,7 +39,7 @@ class JabberBot(telepot.async.Bot):
         self.load()
 
     async def on_chat_message(self, msg):
-        global _started 
+        # global _started 
         content_type, chat_type, chat_id = telepot.glance(msg)
 
         if content_type == 'text':
@@ -63,12 +63,12 @@ class JabberBot(telepot.async.Bot):
                     _dbg('', level=2)
                     self.load()
                     await self.sendMessage(chat_id, 'Jabberbot reloaded!')
-                elif command == '/quit' and \
-                     msg['from']['id'] == self.config['admin'] and \
-                     (time.time() - _started) > 20:
-                    await self.sendMessage(chat_id, '-- jabberbot.')
-                    loop.run_until_complete(asyncio.sleep(0))
-                    sys.exit(0)
+                # elif command == '/quit' and \
+                #      msg['from']['id'] == self.config['admin'] and \
+                #      (time.time() - _started) > 20:
+                #     await self.sendMessage(chat_id, '-- jabberbot.')
+                #     loop.run_until_complete(asyncio.sleep(0))
+                #     sys.exit(0)
                 elif command in ['/help', '/start']:
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
