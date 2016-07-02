@@ -39,7 +39,7 @@ class CobePlugin(object):
         self._dbg = bot._dbg
 
         if os.path.isfile('data/cobe/train.txt'):
-            self._dbg('Training file found.' tag='PLUGIN')
+            self._dbg('Training file found.', tag='PLUGIN')
             self.brain.start_batch_learning()
             with open('data/cobe/train.txt') as f:
                 lines = f.read().split('\n')
@@ -65,7 +65,7 @@ class CobePlugin(object):
         u_id = 'id_' + str(msg['from']['id'])
 
         if (not self.silent or \
-           (m_type == 'private' and self.lusers[u_id])) and
+           (m_type == 'private' and self.lusers[u_id])) and \
            'forward_from' not in msg:
             content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
