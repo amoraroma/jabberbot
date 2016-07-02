@@ -107,7 +107,7 @@ class JabberBot(telepot.async.Bot):
 
             version = self.plugins[plugin].__version__
             author = self.plugins[plugin].__author__
-            _dbg('Loaded plugin: {} v{} ({}})'.format(plugin,
+            _dbg('Loaded plugin: {} v{} ({})'.format(plugin,
                                                       version,
                                                       author), 'SYS')
 
