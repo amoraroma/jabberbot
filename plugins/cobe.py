@@ -64,8 +64,9 @@ class CobePlugin(object):
         m_type = msg['chat']['type']
         u_id = 'id_' + str(msg['from']['id'])
 
-        if not self.silent or \
-           (m_type == 'private' and self.lusers[u_id]):
+        if (not self.silent or \
+           (m_type == 'private' and self.lusers[u_id])) and
+           'forward_from' not in msg:
             content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
             reply = self.brain.reply(msg['text'])
