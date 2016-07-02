@@ -1,3 +1,4 @@
+import os
 import time
 import random
 import asyncio
@@ -34,6 +35,10 @@ class JabberBot(telepot.async.Bot):
         del kwargs['config']
 
         super(JabberBot, self).__init__(*args, **kwargs)
+
+        if not os.path.isdir('data/'):
+            os.path.mkdir('data/')
+
         self._dbg = _dbg
         self._answerer = telepot.async.helper.Answerer(self)
         self.load()
