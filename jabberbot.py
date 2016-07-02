@@ -10,7 +10,7 @@ __version__ = '0.2'
 __prompt__ = '::'
 __banner__ = 'Jabberbot'
 
-DEBUG = 2
+DEBUG = 3
 _longest_tag = 6
 
 def _dbg(msg, tag='INFO', level=0):
