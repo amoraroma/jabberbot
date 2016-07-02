@@ -53,10 +53,12 @@ class JabberBot(telepot.async.Bot):
                             reply = self.plugins[args[0]].__doc__
                     else:
                         pl = list(self.plugins.keys())
+                        pl.sort()
                         plugin_list = ', '.join(pl)
                         reply = 'Available plugins: {}\n'.format(', '.join(pl))
                         reply += 'Try: /help {}'.format(random.choice(pl))
-                    await self.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+                    await self.sendMessage(chat_id, reply,
+                                           reply_to_message_id=m_id)
                 else:
                     await self._dispatch(command, msg)
             else:
