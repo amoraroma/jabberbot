@@ -40,10 +40,18 @@ class JabberBot(telepot.async.Bot):
 
             if content[0] == '/':
                 command = content.split(' ')[0].lower()
+
+                # If the command is targeted, only run commands
+                # targeted at me.
+                if '@' in command:
+                    command, atuser = command.split('@')
+                    if not atuser == self.config['username'].lower():
+                        return
+
                 if command == '/reload' and \
                    msg['from']['id'] == self.config['admin']:
                     del self.plugins
-                    self.load()
+                    await self.load()
                     await self.sendMessage(chat_id, 'Jabberbot reloaded!')
                 elif command in ['/help', '/start']:
                     m_id = msg['message_id']
