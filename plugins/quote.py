@@ -27,6 +27,14 @@ class QuotePlugin(object):
     async def recv_quote(self, msg, bot):
         if 'forward_from' in msg:
             content_type, chat_type, chat_id = glance(msg)
+
+            for q in self.quotes:
+                t = '\n'.join(q[2].split('\n')[:-1])
+                if msg['text'] == t:
+                    reply = 'I already know this quote.'
+                    await bot.sendMessage(chat_id, reply)
+                    return
+
             quote = [
                 msg['forward_from']['first_name'],
                 msg['from']['first_name'],
