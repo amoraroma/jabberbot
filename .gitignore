@@ -4,3 +4,4 @@ __pycache__
 *.brain-journal
 src/
 data/mediasnag/
+data/quotes

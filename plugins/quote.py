@@ -15,52 +15,52 @@ Commands:
 
 class QuotePlugin(object):
     def __init__(self):
-        if not os.path.isfile('data/quotes'):
-            with open('data/quotes', 'w') as f:
-                f.write('[]')
-
-        with open('data/quotes', 'r') as f:
-            self.quotes = json.load(f)
+        if os.path.isfile('data/quotes'):
+            with open('data/quotes', 'r') as f:
+                self.quotes = json.load(f)
+        else:
+            self.quotes = []
 
     def setup(self, bot):
         pass
 
-    async def run(self, msg, bot):
-        content_type, chat_type, chat_id = glance(msg)
+    async def recv_quote(self, msg, bot):
         if 'forward_from' in msg:
-            # add quote
-            reply_to = msg['forward_from']
+            content_type, chat_type, chat_id = glance(msg)
             quote = [
-                reply_to['from']['first_name'],
+                msg['forward_from']['first_name'],
                 msg['from']['first_name'],
-                reply_to['text']
+                msg['text']
             ]
-            self.quotes[chat_id].append(quote)
+            self.quotes.append(quote)
             self.flush()
-        else:
-            # send quote
-            # command = msg['text'].split(' ')[0]
-            args = msg['text'].split(' ')[1:]
+            reply = 'Added quote from {}.'.format(msg['forward_from']['first_name'])
+            await bot.sendMessage(chat_id, reply)
+
+    async def send_quote(self, msg, bot):
+        if len(self.quotes) > 0:
+            content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
+            args = msg['text'].split(' ')[1:]
+            if len(args) > 0:
+                name = args[0]
+                quotes = self.get_quotes_by(name)
+                if len(quotes) == 0:
+                    reply = 'Sorry, I didn\'t find any quotes from {}.'
+                    await bot.sendMessage(chat_id, reply.format(name),
+                                          reply_to_message_id=m_id)
+                    return
+                quote = random.choice(quotes)
+            else:
+                quote = random.choice(self.quotes)
 
-            if len(self.quotes) > 0:
-                if len(args) > 0:
-                    name = args[0]
-                    quotes = self.get_quotes_by(name, chat_id)
-                    quote = random.choice(quotes)
-                else:
-                    quote = random.choice(self.quotes)
+            reply = '{2}\n--{0} (Added by @{1})'.format(*quote)
+            await bot.sendMessage(chat_id, reply,
+                                   reply_to_message_id=m_id)
 
-                q_text = quote[2]
-                q_sname = quote[0]
-                q_aname = quote[1]
-                reply = '{}\n'.format(q_text)
-                reply += '--{} (Added by @{})'.format(q_sname, q_aname)
-                await bot.sendMessage(chat_id, reply,
-                                       reply_to_message_id=m_id)
 
-    def get_quotes_by(self, name, chat_id):
-        return [q for q in self.quotes[chat_id] if name in q[0]]
+    def get_quotes_by(self, name):
+        return [q for q in self.quotes if name == q[0]]
 
     def flush(self):
         with open('data/quotes', 'w') as f:
@@ -72,5 +72,6 @@ atexit.register(p.flush)
 
 exports = {
     'self': p,
-    '/quote': p.run
+    'text': p.recv_quote,
+    '/quote': p.send_quote
 }
