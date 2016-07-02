@@ -15,8 +15,8 @@ Commands:
 
 class QuotePlugin(object):
     def __init__(self):
-        if os.path.isfile('data/quotes'):
-            with open('data/quotes', 'r') as f:
+        if os.path.isfile('data/quote/quotes'):
+            with open('data/quote/quotes', 'r') as f:
                 self.quotes = json.load(f)
         else:
             self.quotes = []
@@ -76,7 +76,7 @@ class QuotePlugin(object):
         return [q for q in self.quotes if name == q[0]]
 
     def flush(self):
-        with open('data/quotes', 'w') as f:
+        with open('data/quote/quotes', 'w') as f:
             json.dump(self.quotes, f, indent=2)
 
 
