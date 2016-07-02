@@ -11,15 +11,17 @@ __prompt__ = '::'
 __banner__ = 'Jabberbot'
 
 DEBUG = 1
-
+_longest_tag = 4
 
 def _dbg(msg, tag='INFO', level=0):
-    global DEBUG
+    global DEBUG, _longest_tag
     
     if level <= DEBUG:
         if msg == '':
             tag = '\\\\/'
-        tag = '[{}]'.format(tag).rjust(6)
+        if len(tag) > _longest_tag:
+            _longest_tag = len(tag)
+        tag = '[{}]'.format(tag).rjust(_longest_tag + 2)
         print('[{}] {} {} {}'.format(time.asctime(), tag,
                                      __prompt__, msg))
 
