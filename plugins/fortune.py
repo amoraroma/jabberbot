@@ -86,7 +86,11 @@ class FortunePlugin(object):
             reply, e = cs.communicate()
             reply = '```{}``` (fig: {})'.format(reply.decode('utf-8'), fig)
 
-        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id, parse_mode='Markdown')
+        pm = None
+        cow = bot.config['fortune'].get('cows', False)
+        if cow:
+            pm = 'Markdown'
+        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id, parse_mode=pm)
 
 
 p = FortunePlugin()

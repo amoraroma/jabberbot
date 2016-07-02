@@ -25,12 +25,13 @@ class GithubPlugin(object):
             repo = self._github.get_repo(args[0])
             try:
                 reply = '{}'.format(repo.html_url)
+                await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
             except:
                 reply = 'Repo {} not found.'.format(args[0])
+                await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
         else:
             reply = 'You must specify a Github repo.'
-
-        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+            await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
 
 p = GithubPlugin()

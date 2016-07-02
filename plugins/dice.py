@@ -21,7 +21,7 @@ class DicePlugin(object):
         m_id = msg['message_id']
         roll_cmd = msg['text'].split(' ')
         try:
-            roll = dice.roll(roll_cmd[0])
+            roll = dice.roll(roll_cmd[1])
         except:
             return
 

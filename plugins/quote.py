@@ -35,6 +35,11 @@ class QuotePlugin(object):
                     await bot.sendMessage(chat_id, reply)
                     return
 
+            if msg['forward_from']['first_name'] == bot.config['username']:
+                reply = 'You can\'t quote me, human.'
+                await bot.sendMessage(chat_id, reply)
+                return
+
             quote = [
                 msg['forward_from']['first_name'],
                 msg['from']['first_name'],
