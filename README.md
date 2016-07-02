@@ -36,3 +36,7 @@ Now put your Telegram API key in a file called `token` in the same directory at 
 ### Plugins
 
 Want to write one? [Go write one!](https://github.com/sli/jabberbot/wiki/Writing-Plugins)
+
+### Training cobe
+
+To train cobe, simply place a file named `train.txt` containing your training text in `data/cobe/`. This file will be used to train cobe then renamed (to something similar to `train.txt.0`). Only a file named `train.txt` will be used to train cobe, so don't worry about these backups.
