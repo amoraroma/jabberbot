@@ -10,8 +10,8 @@ __version__ = '0.2'
 __prompt__ = '::'
 __banner__ = 'Jabberbot'
 
-DEBUG = 1
-_longest_tag = 4
+DEBUG = 2
+_longest_tag = 6
 
 def _dbg(msg, tag='INFO', level=0):
     global DEBUG, _longest_tag
@@ -54,14 +54,17 @@ class JabberBot(telepot.async.Bot):
                     if not atuser == self.config['username'].lower():
                         return
 
-                if msg['from']['id'] == self.config['admin']:
-                    if command == '/reload':
-                        del self.plugins
-                        _dbg('', level=1)
-                        self.load()
-                        await self.sendMessage(chat_id, 'Jabberbot reloaded!')
-                    elif command == '/quit':
-                        await self.sendMessage(chat_id, '-- jabberbot.')
+                if command == '/reload' and \
+                   msg['from']['id'] == self.config['admin']:
+                    del self.plugins
+                    _dbg('', level=2)
+                    self.load()
+                    await self.sendMessage(chat_id, 'Jabberbot reloaded!')
+                elif command == '/quit' and \
+                     msg['from']['id'] == self.config['admin']:
+                    await self.sendMessage(chat_id, '-- jabberbot.')
+                    loop = asyncio.get_event_loop()
+                    loop.stop()
                 elif command in ['/help', '/start']:
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
@@ -127,22 +130,23 @@ class JabberBot(telepot.async.Bot):
         for plugin in self.config['plugins']:
             path = 'plugins.{}'.format(plugin)
             self.plugins[plugin] = importlib.import_module(path)
-            version = self.plugins[plugin].__version__
-            author = self.plugins[plugin].__author__
-            _dbg('Loaded plugin: {} v{} ({})'.format(plugin,
-                                                     version,
-                                                     author), 'SYS')
 
-        _dbg('', level=1)
+            tmpl = 'Loaded plugin: {} v{} ({})'
+            tmpl_vars = (plugin,
+                         self.plugins[plugin].__version__,
+                         self.plugins[plugin].__author__)
+            _dbg(tmpl.format(*tmpl_vars), 'SYS', level=1)
+
+        _dbg('', level=2)
         for plugin in self.config['plugins']:
             self.plugins[plugin].exports['self'].setup(self)
-        _dbg('', level=1)
+        _dbg('', level=2)
 
     async def _dispatch(self, command, msg):
         for plugin in self.plugins:
             if command in self.plugins[plugin].exports:
                 _dbg('Invoking {} for command {}.'.format(plugin, command),
-                     tag='PLUGIN', level=2)
+                     tag='PLUGIN', level=4)
                 func = self.plugins[plugin].exports[command]
                 await func(msg, self)
 
@@ -160,4 +164,18 @@ if __name__ == '__main__':
 
     _dbg('{} v{} ready.'.format(__banner__, __version__))
 
-    loop.run_forever()
+    good = False
+    try:
+        loop.run_forever()
+    except (KeyboardInterrupt, SystemExit):
+        loop.run_until_complete(asyncio.sleep(1))
+        loop.close()
+        good = True
+    except:
+        good = False
+
+    if good:
+        _dbg('Goodbye!', tag='GOOD')
+    else:
+        _dbg('Ouch!', tag='ERROR')
+
