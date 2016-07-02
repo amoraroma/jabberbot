@@ -60,6 +60,7 @@ class FortunePlugin(object):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         args = msg['text'].split(' ')[1:]
+        source = None
         if len(args) > 0 and args[0] != '-c':
             if args[0] in self.fortunes:
                 source = args[0]
