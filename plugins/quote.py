@@ -73,7 +73,7 @@ class QuotePlugin(object):
 
 
     def get_quotes_by(self, name):
-        return [q for q in self.quotes if name == q[0]]
+        return [q for q in self.quotes if name in q[0]]
 
     def flush(self):
         with open('data/quote/quotes', 'w') as f:
