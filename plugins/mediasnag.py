@@ -99,6 +99,7 @@ class MediaSnagPlugin(object):
                     ydl.download([url])
 
                 fn = glob.glob('data/mediasnag/youtube/*-{}.mp3'.format(v_id))[0]
+                self._dbg('Sending audio...', tag='PLUGIN', level=2)
             else:
                 bot._dbg('Sending cached audio for {}...'.format(v_id), tag='PLUGIN', level=2)
                 await bot.sendMessage(chat_id, 'Already snagged that one. Lemme send it.', reply_to_message_id=m_id)
@@ -106,7 +107,6 @@ class MediaSnagPlugin(object):
 
             title = os.path.basename(fn).replace('-{}.mp3'.format(v_id), '')
 
-            self._dbg('Sending audio...', tag='PLUGIN', level=2)
             await bot.sendChatAction(chat_id, 'upload_audio')
             with open(fn, 'rb') as f:
                 await bot.sendAudio(chat_id, f, title=title, reply_to_message_id=m_id)
