@@ -1,7 +1,9 @@
 import os
 import glob
 import json
+import time
 from telepot import glance
+from gtts import gTTS
 from cobe.brain import Brain
 
 
@@ -18,17 +20,23 @@ class CobePlugin(object):
     def __init__(self):
         if not os.path.isdir('data/cobe/'):
             os.mkdir('data/cobe/')
-        if not os.path.isfile('data/cobe/jabberbot.brain'):
-            Brain.init('data/cobe/jabberbot.brain')
-
-        self.brain = Brain('data/cobe/jabberbot.brain')
-
+        if not os.path.isdir('data/cobe/voice/'):
+            os.mkdir('data/cobe/voice/')
         if not os.path.isfile('data/cobe/lusers'):
             with open('data/cobe/lusers', 'w') as f:
+                f.write('{}')
+        if not os.path.isfile('data/cobe/vlusers'):
+            with open('data/cobe/vlusers', 'w') as f:
                 f.write('{}')
 
         with open('data/cobe/lusers', 'r') as f:
             self.lusers = json.load(f)
+        with open('data/cobe/vlusers', 'r') as f:
+            self.vlusers = json.load(f)
+
+        if not os.path.isfile('data/cobe/jabberbot.brain'):
+            Brain.init('data/cobe/jabberbot.brain')
+        self.brain = Brain('data/cobe/jabberbot.brain')
 
     def setup(self, bot):
         self._dbg = bot._dbg
@@ -77,9 +85,15 @@ class CobePlugin(object):
             content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
             reply = self.brain.reply(msg['text'])
+            # if m_type == 'private' and self.lusers[u_id] and self.vlusers[u_id]:
+            #     audio_file = await self.get_reply_audio(reply)
+            #     await bot.sendChatAction(chat_id, 'upload_audio')
+            #     with open(audio_file, 'wb') as f:
+            #         await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
+            # else:
             await bot.sendMessage(chat_id, reply)
 
-    async def ask(self, msg, bot):
+    async def ask(self, msg, bot, ret=False):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         text = msg['text'].split(' ', 1)
@@ -87,7 +101,22 @@ class CobePlugin(object):
             text = text[1]
             self.brain.learn(text)
             reply = self.brain.reply(text)
+            if ret:
+                return reply
             await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+        return None
+
+    async def ask_and_say(self, msg, bot):
+        content_type, chat_type, chat_id = glance(msg)
+        m_id = msg['message_id']
+        reply = await self.ask(msg, bot, ret=True)
+        if not reply:
+            return
+
+        audio_file = await self.get_reply_audio(reply)
+        await bot.sendChatAction(chat_id, 'upload_audio')
+        with open(audio_file, 'wb') as f:
+            await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
 
     async def chat(self, msg, bot):
         content_type, chat_type, chat_id = glance(msg)
@@ -95,6 +124,7 @@ class CobePlugin(object):
         args = msg['text'].split(' ')[1:]
         u_id = 'id_' + str(msg['from']['id'])
         if len(args) > 0:
+            args[0] = args[0].lower()
             if args[0] == 'on':
                 self.lusers[u_id] = True
                 reply = 'Chat is: on'
@@ -114,14 +144,48 @@ class CobePlugin(object):
 
         self._flush()
 
+    async def vchat(self, msg, bot):
+        content_type, chat_type, chat_id = glance(msg)
+        command = msg['text'].split(' ', 1)[0]
+        args = msg['text'].split(' ')[1:]
+        u_id = 'id_' + str(msg['from']['id'])
+        if len(args) > 0:
+            args[0] = args[0].lower()
+            if args[0] == 'on':
+                self.vlusers[u_id] = True
+                reply = 'VChat is: on'
+                await bot.sendMessage(chat_id, reply)
+            elif args[0] == 'off':
+                self.vlusers[u_id] = False
+                reply = 'VChat is: off'
+                await bot.sendMessage(chat_id, reply)
+            else:
+                reply = 'Eh? Are you turning vchat on or off?'
+                await bot.sendMessage(chat_id, reply)
+        else:
+            p = self.vlusers.get(u_id, False)
+            ch = 'on' if p else 'off'
+            reply = 'VChat is: {}'.format(ch)
+            await bot.sendMessage(chat_id, reply)
+
+        self._flush()
+
     def get_reply(self, incoming_msg, bot):
         self.brain.learn(incoming_msg)
         reply = self.brain.reply(incoming_msg)
         return reply
 
+    async def get_reply_audio(self, reply):
+        reply_audio = gTTS(text=reply, lang='en')
+        audio_file = 'data/cobe/voice/reply-{}.mp3'.format(time.time())
+        reply_audio.save(audio_file)
+        return audio_file
+
     def _flush(self):
         with open('data/cobe/lusers', 'w') as f:
             json.dump(self.lusers, f, indent=2)
+        with open('data/cobe/vlusers', 'w') as f:
+            json.dump(self.vlusers, f, indent=2)
 
 p = CobePlugin()
 
@@ -130,5 +194,7 @@ exports = {
     'text': p.run,
     '/ask': p.ask,
     '/?': p.ask,
-    '/chat': p.chat
+    # '/!': p.ask_and_say,
+    '/chat': p.chat,
+    # '/vchat': p.vchat
 }
