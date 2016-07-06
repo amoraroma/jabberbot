@@ -3,6 +3,6 @@ __pycache__
 *.brain
 *.brain-journal
 src/
-data/cobe/
+data/cobe/*.bra*
 data/mediasnag/
 data/quote/
