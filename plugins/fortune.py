@@ -7,7 +7,7 @@ import subprocess
 from telepot import glance
 
 __author__ = 'sli'
-__version__ = '0.2'
+__version__ = '0.2.1'
 __doc__ = '''Tells you your fortune. Available sources are: {}
 
 Commands:
