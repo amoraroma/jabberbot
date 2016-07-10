@@ -10,13 +10,13 @@ Commands:
 
 
 class GithubPlugin(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self._github = github.Github()
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         pass
 
-    async def run(self, msg, bot):
+    async def run(self, msg, bot) -> None:
         command = msg['text'].split(' ')[0]
         args = msg['text'].split(' ')[1:]
         if len(args) > 0:

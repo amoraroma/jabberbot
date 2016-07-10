@@ -13,7 +13,7 @@ Commands:
   * /quote [first name] (Example: /quote sli; /quote)'''
 
 
-class QuotePlugin(object):
+class QuotePlugin(object) -> None:
     def __init__(self):
         if os.path.isfile('data/quote/quotes'):
             with open('data/quote/quotes', 'r') as f:
@@ -21,10 +21,10 @@ class QuotePlugin(object):
         else:
             self.quotes = []
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         pass
 
-    async def recv_quote(self, msg, bot):
+    async def recv_quote(self, msg, bot) -> None:
         if 'forward_from' in msg:
             content_type, chat_type, chat_id = glance(msg)
 
@@ -50,7 +50,7 @@ class QuotePlugin(object):
             reply = 'Added quote from {}.'.format(msg['forward_from']['first_name'])
             await bot.sendMessage(chat_id, reply)
 
-    async def send_quote(self, msg, bot):
+    async def send_quote(self, msg, bot) -> None:
         if len(self.quotes) > 0:
             content_type, chat_type, chat_id = glance(msg)
             m_id = msg['message_id']
@@ -72,10 +72,10 @@ class QuotePlugin(object):
                                    reply_to_message_id=m_id)
 
 
-    def get_quotes_by(self, name):
+    def get_quotes_by(self, name) -> list:
         return [q for q in self.quotes if name.lower() in q[0].lower()]
 
-    def flush(self):
+    def flush(self) -> None:
         with open('data/quote/quotes', 'w') as f:
             json.dump(self.quotes, f, indent=2)
 

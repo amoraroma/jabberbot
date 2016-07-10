@@ -16,7 +16,7 @@ __banner__ = 'Jabberbot'
 DEBUG = 3
 _longest_tag = 6
 
-def _dbg(msg, tag='INFO', level=0):
+def _dbg(msg, tag='INFO', level=0) -> None:
     global DEBUG, _longest_tag
     
     if level <= DEBUG:
@@ -30,7 +30,7 @@ def _dbg(msg, tag='INFO', level=0):
 
 
 class JabberBot(telepot.async.Bot):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.config_file = kwargs['config']
         del kwargs['config']
 
@@ -43,7 +43,7 @@ class JabberBot(telepot.async.Bot):
         self._answerer = telepot.async.helper.Answerer(self)
         self.load()
 
-    async def on_chat_message(self, msg):
+    async def on_chat_message(self, msg) -> None:
         # global _started 
         content_type, chat_type, chat_id = telepot.glance(msg)
 
@@ -95,13 +95,13 @@ class JabberBot(telepot.async.Bot):
         else:
             await self._dispatch(content_type, msg)
 
-    def on_callback_query(self, msg):
+    def on_callback_query(self, msg) -> None:
         # message = telepot.glance(msg, flavor='callback_query')
         # query_id, from_id, query_data = message
         # print('Callback Query:', query_id, from_id, query_data)
         pass
 
-    def on_inline_query(self, msg):
+    def on_inline_query(self, msg) -> None:
         # message = telepot.glance(msg, flavor='inline_query')
         # query_id, from_id, query_string = message
         # print('Inline Query:', query_id, from_id, query_string)
@@ -117,13 +117,13 @@ class JabberBot(telepot.async.Bot):
         # self._answerer.answer(msg, compute_answer)
         pass
 
-    def on_chosen_inline_result(self, msg):
+    def on_chosen_inline_result(self, msg) -> None:
         # message = telepot.glance(msg, flavor='chosen_inline_result')
         # result_id, from_id, query_string = message
         # print('Chosen Inline Result:', result_id, from_id, query_string)
         pass
 
-    def load(self):
+    def load(self) -> None:
         global DEBUG, __prompt__
 
         with open(self.config_file, 'r') as f:
@@ -151,7 +151,7 @@ class JabberBot(telepot.async.Bot):
             self.plugins[plugin].exports['self'].setup(self)
         _dbg('', level=2)
 
-    async def _dispatch(self, command, msg):
+    async def _dispatch(self, command, msg) -> None:
         for plugin in self.plugins:
             if command in self.plugins[plugin].exports:
                 _dbg('Invoking {} for command {}.'.format(plugin, command),

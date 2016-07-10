@@ -16,18 +16,18 @@ Commands:
 
 
 class QuietLogger(object):
-    def debug(self, msg):
+    def debug(self, msg) -> None:
         pass
 
-    def warning(self, msg):
+    def warning(self, msg) -> None:
         pass
 
-    def error(self, msg):
+    def error(self, msg) -> None:
         print('YDL Error: {}'.format(msg))
 
 
 class MediaSnagPlugin(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self._ydl_opts = {
             'outtmpl': 'data/mediasnag/youtube/%(title)s-%(id)s.%(ext)s',
             'noplaylist': True,
@@ -64,11 +64,10 @@ class MediaSnagPlugin(object):
         if not os.path.isdir('data/mediasnag/soundcloud/'):
             os.mkdir('data/mediasnag/soundcloud/')
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         self._dbg = bot._dbg
 
-
-    async def run(self, msg, bot):
+    async def run(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         args = msg['text'].split(' ')[1:]
@@ -138,7 +137,7 @@ class MediaSnagPlugin(object):
             reply = "You must specify a YouTube URL."
             await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
-    def _progress(self, d):
+    def _progress(self, d) -> None:
         self._dbg('YDL Status: {}'.format(d['status']), tag='PLUGIN', level=4)
         if d['status'] != 'downloading':
             self._dbg('YDL Status: {}'.format(d['status']), tag='PLUGIN', level=2)

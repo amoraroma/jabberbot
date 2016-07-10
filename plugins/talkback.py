@@ -11,13 +11,13 @@ __doc__ = '''A talkative feature. Reacts automatically to voice messages.'''
 
 
 class TalkBackPlugin(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self._recog = sr.Recognizer()
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         pass
 
-    async def run(self, msg, bot):
+    async def run(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         file_id = msg['voice']['file_id']

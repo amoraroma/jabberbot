@@ -17,7 +17,7 @@ Commands:
 
 
 class CobePlugin(object):
-    def __init__(self):
+    def __init__(self) -> None:
         if not os.path.isdir('data/cobe/'):
             os.mkdir('data/cobe/')
         if not os.path.isdir('data/cobe/voice/'):
@@ -38,7 +38,7 @@ class CobePlugin(object):
             Brain.init('data/cobe/jabberbot.brain')
         self.brain = Brain('data/cobe/jabberbot.brain')
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         self._dbg = bot._dbg
 
         if not 'cobe' in bot.config:
@@ -62,7 +62,7 @@ class CobePlugin(object):
             self._dbg('Training complete. Training file moved to {}.'
                       .format(os.path.basename(dst)), level=2)
 
-    async def run(self, msg, bot):
+    async def run(self, msg, bot) -> None:
         # Don't learn URLs.
         if 'entities' in msg:
             for e in msg['entities']:
@@ -93,7 +93,7 @@ class CobePlugin(object):
             # else:
             await bot.sendMessage(chat_id, reply)
 
-    async def ask(self, msg, bot, ret=False):
+    async def ask(self, msg, bot, ret=False) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         text = msg['text'].split(' ', 1)
@@ -106,7 +106,7 @@ class CobePlugin(object):
             await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
         return None
 
-    async def ask_and_say(self, msg, bot):
+    async def ask_and_say(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         reply = await self.ask(msg, bot, ret=True)
@@ -118,7 +118,7 @@ class CobePlugin(object):
         with open(audio_file, 'wb') as f:
             await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
 
-    async def chat(self, msg, bot):
+    async def chat(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         command = msg['text'].split(' ', 1)[0]
         args = msg['text'].split(' ')[1:]
@@ -144,7 +144,7 @@ class CobePlugin(object):
 
         self._flush()
 
-    async def vchat(self, msg, bot):
+    async def vchat(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         command = msg['text'].split(' ', 1)[0]
         args = msg['text'].split(' ')[1:]
@@ -170,18 +170,18 @@ class CobePlugin(object):
 
         self._flush()
 
-    def get_reply(self, incoming_msg, bot):
+    def get_reply(self, incoming_msg, bot) -> str:
         self.brain.learn(incoming_msg)
         reply = self.brain.reply(incoming_msg)
         return reply
 
-    async def get_reply_audio(self, reply):
+    async def get_reply_audio(self, reply) -> str:
         reply_audio = gTTS(text=reply, lang='en')
         audio_file = 'data/cobe/voice/reply-{}.mp3'.format(time.time())
         reply_audio.save(audio_file)
         return audio_file
 
-    def _flush(self):
+    def _flush(self) -> None:
         with open('data/cobe/lusers', 'w') as f:
             json.dump(self.lusers, f, indent=2)
         with open('data/cobe/vlusers', 'w') as f:

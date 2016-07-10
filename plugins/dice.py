@@ -10,13 +10,13 @@ Commands:
 
 
 class DicePlugin(object):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         pass
 
-    async def run(self, msg, bot):
+    async def run(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         roll_cmd = msg['text'].split(' ')
