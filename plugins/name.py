@@ -22,6 +22,9 @@ class NamePlugin(object):
         with open('data/name/titles', 'r') as f:
             self._titles = f.read().rstrip().split('\n')
 
+        self._orders = ('first', 'second', 'third', 'fourth', 'fifth',
+                        'sixth', 'seventh', 'eighth', 'last')
+
     def setup(self, bot) -> None:
         pass
 
@@ -29,8 +32,8 @@ class NamePlugin(object):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         name_parts = self.generate_name()
-        name = '{}, {} of the {} of the {} {}'.format(*name_parts)
-        reply = 'Your are now {}, first of their name.'.format(name)
+        name = '{}, {} of the {} of the {} {}'.format(*name_parts[:-1])
+        reply = 'Your are now {}, {} of their name.'.format(name, name_parts[-1])
         await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def generate_name(self) -> str:
@@ -45,7 +48,8 @@ class NamePlugin(object):
         adj = random.choice(self._adjectives)
         grp = random.choice(self._groups)
         title = random.choice(self._titles)
-        return (name.capitalize(), title, noun, adj, grp)
+        order = random.choice(self._orders)
+        return (name.capitalize(), title, noun, adj, grp, order)
 
 p = NamePlugin()
 
