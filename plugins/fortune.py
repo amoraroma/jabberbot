@@ -15,7 +15,7 @@ Commands:
 
 
 class FortunePlugin(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self.fortunes = {}
         fortune_files = glob.glob('data/fortunes/*')
         for fortune_file in fortune_files:
@@ -25,42 +25,13 @@ class FortunePlugin(object):
                 self.fortunes[source_name] = list(filter(None, fortunes))
         self._sources = list(self.fortunes.keys())
 
-    def setup(self, bot):
+    def setup(self, bot) -> None:
         global __doc__
 
         if not 'fortune' in bot.config:
             bot.config['fortune'] = {}
 
-        if 'command' in bot.config['fortune']:
-            self._cowcmd = bot.config['fortune']['command'].split(' ')
-        else:
-            cow = bot.config['fortune'].get('cows', False)
-            if cow:
-                try:
-                    cs_sub = subprocess.Popen(cowcmd + ['-l'],
-                                              stdout=subprocess.PIPE,
-                                              stderr=subprocess.PIPE)
-                    output, err = cs_sub.communicate()
-                    output = output.decode('utf-8').rstrip().split('\n')[1:]
-                    output = ' '.join(output)
-                    self._cowfigs = output.split(' ')
-
-                    dcs = bot.config['fortune'].get('disabled-cows', [])
-                    for dc in dcs:
-                        self._cowfigs.remove(dc)
-                except:
-                    self._cowcmd = None
-                    self._cowfigs = []
-
-        if self._cowcmd:
-            __doc__ = '''Tells you your fortune. Available sources are: {}
-
-This fortune has super cow powers.
-
-Commands:
-  * /fortune [source] (Example: /fortune {}; /fortune)'''
-
-    async def run(self, msg, bot):
+    async def run(self, msg, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         args = msg['text'].split(' ')[1:]
@@ -70,10 +41,8 @@ Commands:
                 source = args[0]
                 reply = random.choice(self.fortunes[source])
             else:
-                sources = ' '.join(self.fortunes.keys())
                 reply = 'Possible fortune sources:\n'
-                for s in sources:
-                    reply += ' * {}'.format(s)
+                reply += ', '.join(self.fortunes.keys())
         else:
             source = random.choice(list(self.fortunes.keys()))
             reply = random.choice(self.fortunes[source])
@@ -83,21 +52,7 @@ Commands:
             lucky.append(str(random.randint(1, 27)))
             reply += '\n\nLucky numbers: {}'.format(', '.join(lucky))
 
-        if '-c' in args and self._cowcmd:
-            if 'command' in bot.config['fortune']:
-                cmd = self._cowcmd + [reply]
-            else:
-                fig = random.choice(self._cowfigs)
-                cmd = [self._cowcmd, '-f', fig, reply]
-            cs = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-            reply, e = cs.communicate()
-            reply = '```{}``` (fig: {})'.format(reply.decode('utf-8'), fig)
-
-        pm = None
-        cow = bot.config['fortune'].get('cows', False)
-        if cow:
-            pm = 'Markdown'
-        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id, parse_mode=pm)
+        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
 
 p = FortunePlugin()
