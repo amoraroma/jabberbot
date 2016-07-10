@@ -2,7 +2,7 @@ import random
 from telepot import glance
 
 __author__ = 'sli'
-__version__ = '0.1'
+__version__ = '0.1.1'
 __doc__ = '''Generates for you a new fantasy name.
 
 Commands:
@@ -19,6 +19,8 @@ class NamePlugin(object):
             self._groups = f.read().rstrip().split('\n')
         with open('data/name/locations', 'r') as f:
             self._locations = f.read().rstrip().split('\n')
+        with open('data/name/titles', 'r') as f:
+            self._titles = f.read().rstrip().split('\n')
 
     def setup(self, bot) -> None:
         pass
@@ -26,8 +28,9 @@ class NamePlugin(object):
     async def run(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
-        name = self.generate_name()
-        reply = 'Your new name is: {}'.format(name)
+        name_parts = self.generate_name()
+        name = '{}, {} of the {} of the {} {}'.format(*name_parts)
+        reply = 'Your are now {}, first of their name.'.format(name)
         await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def generate_name(self) -> str:
@@ -41,7 +44,8 @@ class NamePlugin(object):
         noun = random.choice(self._nouns)
         adj = random.choice(self._adjectives)
         grp = random.choice(self._groups)
-        return '%s, of the %s of the %s %s' % (name.capitalize(), noun, adj, grp)
+        title = random.choice(self._groups)
+        return (name.capitalize(), title, noun, adj, grp)
 
 p = NamePlugin()
 
