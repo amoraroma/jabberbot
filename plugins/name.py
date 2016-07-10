@@ -17,8 +17,8 @@ class NamePlugin(object):
             self._adjectives = f.read().rstrip().split('\n')
         with open('data/name/groups', 'r') as f:
             self._groups = f.read().rstrip().split('\n')
-        with open('data/name/locations', 'r') as f:
-            self._locations = f.read().rstrip().split('\n')
+        with open('data/name/name-pieces', 'r') as f:
+            self._name_pieces = f.read().rstrip().split('\n')
         with open('data/name/titles', 'r') as f:
             self._titles = f.read().rstrip().split('\n')
 
@@ -34,10 +34,10 @@ class NamePlugin(object):
         await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def generate_name(self) -> str:
-        nameA = random.choice(self._locations)
+        nameA = random.choice(self._name_pieces)
         nameB = nameA
         while nameA == nameB:
-            nameB = random.choice(self._locations)
+            nameB = random.choice(self._name_pieces)
         if nameA[-1] == nameB[0]:
             nameB = nameB[1:]
         name = nameA+nameB
