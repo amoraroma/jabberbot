@@ -23,7 +23,7 @@ class NamePlugin(object):
     def setup(self, bot) -> None:
         pass
 
-    def run(self, msg: dict, bot) -> None:
+    async def run(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         name = self.generate_name()
@@ -41,7 +41,7 @@ class NamePlugin(object):
         noun = random.choice(self._nouns)
         adj = random.choice(self._adjectives)
         grp = random.choice(self._groups)
-        return '%s, %s of the %s %s' % (name.capitalize(), noun, adj, grp)
+        return '%s, of the %s of the %s %s' % (name.capitalize(), noun, adj, grp)
 
 p = NamePlugin()
 
