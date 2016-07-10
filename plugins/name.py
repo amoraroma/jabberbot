@@ -44,7 +44,7 @@ class NamePlugin(object):
         noun = random.choice(self._nouns)
         adj = random.choice(self._adjectives)
         grp = random.choice(self._groups)
-        title = random.choice(self._groups)
+        title = random.choice(self._titles)
         return (name.capitalize(), title, noun, adj, grp)
 
 p = NamePlugin()
