@@ -62,7 +62,7 @@ class CobePlugin(object):
             self._dbg('Training complete. Training file moved to {}.'
                       .format(os.path.basename(dst)), level=2)
 
-    async def run(self, msg, bot) -> None:
+    async def run(self, msg: dict, bot) -> None:
         # Don't learn URLs.
         if 'entities' in msg:
             for e in msg['entities']:
@@ -93,7 +93,7 @@ class CobePlugin(object):
             # else:
             await bot.sendMessage(chat_id, reply)
 
-    async def ask(self, msg, bot, ret=False) -> None:
+    async def ask(self, msg: dict, bot, ret: bool=False) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         text = msg['text'].split(' ', 1)
@@ -106,7 +106,7 @@ class CobePlugin(object):
             await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
         return None
 
-    async def ask_and_say(self, msg, bot) -> None:
+    async def ask_and_say(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         reply = await self.ask(msg, bot, ret=True)
@@ -118,7 +118,7 @@ class CobePlugin(object):
         with open(audio_file, 'wb') as f:
             await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
 
-    async def chat(self, msg, bot) -> None:
+    async def chat(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         command = msg['text'].split(' ', 1)[0]
         args = msg['text'].split(' ')[1:]
@@ -144,7 +144,7 @@ class CobePlugin(object):
 
         self._flush()
 
-    async def vchat(self, msg, bot) -> None:
+    async def vchat(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         command = msg['text'].split(' ', 1)[0]
         args = msg['text'].split(' ')[1:]
@@ -170,12 +170,12 @@ class CobePlugin(object):
 
         self._flush()
 
-    def get_reply(self, incoming_msg, bot) -> str:
+    def get_reply(self, incoming_msg: str) -> str:
         self.brain.learn(incoming_msg)
         reply = self.brain.reply(incoming_msg)
         return reply
 
-    async def get_reply_audio(self, reply) -> str:
+    async def get_reply_audio(self, reply: str) -> str:
         reply_audio = gTTS(text=reply, lang='en')
         audio_file = 'data/cobe/voice/reply-{}.mp3'.format(time.time())
         reply_audio.save(audio_file)

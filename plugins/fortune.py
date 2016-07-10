@@ -31,7 +31,7 @@ class FortunePlugin(object):
         if not 'fortune' in bot.config:
             bot.config['fortune'] = {}
 
-    async def run(self, msg, bot) -> None:
+    async def run(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         args = msg['text'].split(' ')[1:]

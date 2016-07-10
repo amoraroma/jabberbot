@@ -17,7 +17,7 @@ class TalkBackPlugin(object):
     def setup(self, bot) -> None:
         pass
 
-    async def run(self, msg, bot) -> None:
+    async def run(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
         file_id = msg['voice']['file_id']

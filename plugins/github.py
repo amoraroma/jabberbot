@@ -16,7 +16,7 @@ class GithubPlugin(object):
     def setup(self, bot) -> None:
         pass
 
-    async def run(self, msg, bot) -> None:
+    async def run(self, msg: dict, bot) -> None:
         command = msg['text'].split(' ')[0]
         args = msg['text'].split(' ')[1:]
         if len(args) > 0:
