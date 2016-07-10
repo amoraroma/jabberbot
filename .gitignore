@@ -4,5 +4,7 @@ __pycache__
 *.brain-journal
 src/
 data/cobe/*.bra*
+data/cobe/*users
+data/cobe/train.txt.*
 data/mediasnag/
 data/quote/
