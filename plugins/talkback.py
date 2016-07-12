@@ -60,8 +60,6 @@ class TalkBackPlugin(object):
         reply_audio.save(audio_file)
 
         with open(audio_file, 'rb') as f:
-            # send audio instead of voice for now
-            # await bot.sendAudio(chat_id, f, reply_to_message_id=m_id)
             await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
 
         os.remove(audio_file)
