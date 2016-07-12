@@ -4,15 +4,17 @@ import json
 import time
 from telepot import glance
 from cobe.brain import Brain
+from gTTS import gTTS
 
 
 __author__ = 'sli'
-__version__ = '0.1'
+__version__ = '0.2'
 __doc__ = '''Uses Cobe to learn grammar and generate responses. Unless silenced, it will respond to messages automatically.
 
 Commands:
   * /ask <text> - Get a reply. (Example: /ask tell me about clouds)
-  * /? - Shortcut for /ask.'''
+  * /? - Shortcut for /ask.
+  * /! - Similar to /ask, except it gives a voice response.'''
 
 
 class CobePlugin(object):
@@ -46,20 +48,7 @@ class CobePlugin(object):
         ccfg = bot.config['cobe']
         self.silent = ccfg.get('silent', True)
 
-        if os.path.isfile('data/cobe/train.txt'):
-            self._dbg('Training file found.', tag='PLUGIN', level=2)
-            self.brain.start_batch_learning()
-            with open('data/cobe/train.txt') as f:
-                lines = f.read().split('\n')
-                for line in lines:
-                    line = line.lower().replace('"', '')
-                    self.brain.learn(line)
-            self.brain.stop_batch_learning()
-            t_files = glob.glob('data/cobe/train.txt.*')
-            dst = 'data/cobe/train.txt.{}'.format(len(t_files))
-            os.rename('data/cobe/train.txt', dst)
-            self._dbg('Training complete. Training file moved to {}.'
-                      .format(os.path.basename(dst)), level=2)
+        self.train_brain()
 
     async def run(self, msg: dict, bot) -> None:
         # Don't learn URLs.
@@ -114,8 +103,9 @@ class CobePlugin(object):
 
         audio_file = await self.get_reply_audio(reply)
         await bot.sendChatAction(chat_id, 'upload_audio')
-        with open(audio_file, 'wb') as f:
+        with open(audio_file, 'rb') as f:
             await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
+        os.remove(audio_file)
 
     async def chat(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
@@ -169,6 +159,13 @@ class CobePlugin(object):
 
         self._flush()
 
+    async def train(self, msg: dict, bot) -> None:
+        if not msg['from']['id'] == self.config['admin']:
+            return
+        await bot.sendMessage(chat_id, 'Training.')
+        self.train_brain()
+        await bot.sendMessage(chat_id, 'Training complete.')
+
     def get_reply(self, incoming_msg: str) -> str:
         self.brain.learn(incoming_msg)
         reply = self.brain.reply(incoming_msg)
@@ -179,6 +176,22 @@ class CobePlugin(object):
         audio_file = 'data/cobe/voice/reply-{}.mp3'.format(time.time())
         reply_audio.save(audio_file)
         return audio_file
+
+    def train_brain(self) -> None:
+        if os.path.isfile('data/cobe/train.txt'):
+            self._dbg('Training file found.', tag='PLUGIN', level=2)
+            self.brain.start_batch_learning()
+            with open('data/cobe/train.txt') as f:
+                lines = f.read().split('\n')
+                for line in lines:
+                    line = line.lower().replace('"', '')
+                    self.brain.learn(line)
+            self.brain.stop_batch_learning()
+            t_files = glob.glob('data/cobe/train.txt.*')
+            dst = 'data/cobe/train.txt.{}'.format(len(t_files))
+            os.rename('data/cobe/train.txt', dst)
+            self._dbg('Training complete. Training file moved to {}.'
+                      .format(os.path.basename(dst)), level=2)
 
     def _flush(self) -> None:
         with open('data/cobe/lusers', 'w') as f:
@@ -193,7 +206,8 @@ exports = {
     'text': p.run,
     '/ask': p.ask,
     '/?': p.ask,
-    # '/!': p.ask_and_say,
+    '/!': p.ask_and_say,
     '/chat': p.chat,
-    # '/vchat': p.vchat
+    '/vchat': p.vchat,
+    '/train': p.train
 }
