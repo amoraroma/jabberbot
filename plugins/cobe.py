@@ -4,7 +4,7 @@ import json
 import time
 from telepot import glance
 from cobe.brain import Brain
-from gTTS import gTTS
+from gtts import gTTS
 
 
 __author__ = 'sli'
