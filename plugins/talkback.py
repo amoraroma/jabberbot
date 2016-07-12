@@ -16,10 +16,6 @@ class TalkBackPlugin(object):
     def __init__(self) -> None:
         if not os.path.isdir('data/talkback'):
             os.mkdir('data/talkback')
-        if not os.path.isdir('data/talkback/input'):
-            os.mkdir('data/talkback/input')
-        if not os.path.isdir('data/talkback/output'):
-            os.mkdir('data/talkback/output')
         self._recog = sr.Recognizer()
 
     def setup(self, bot) -> None:
@@ -36,7 +32,7 @@ class TalkBackPlugin(object):
         path = file_info['file_path']
         audio_url = 'https://api.telegram.org/file/bot{}/{}'
         audio_url = audio_url.format(bot._token, path)
-        message_audio = 'data/talkback/input/{}.ogg'.format(file_id)
+        message_audio = 'data/talkback/{}.ogg'.format(file_id)
 
         with open(message_audio, 'wb') as f:
             r = requests.get(audio_url)
@@ -45,12 +41,13 @@ class TalkBackPlugin(object):
         of = message_audio.replace('.ogg', '.flac')
         voice = AudioSegment.from_ogg(message_audio)
         voice.export(of, format='flac')
-        os.unlink(message_audio)
+        os.remove(message_audio)
 
         with sr.AudioFile(of) as source:
             audio = self._recog.record(source)
 
         incoming_message = self._recog.recognize_google(audio)
+        os.remove(of)
 
         self._dbg('{} said: {}'.format(msg['from']['first_name'],
                                        incoming_message),
@@ -59,7 +56,7 @@ class TalkBackPlugin(object):
         get_reply = bot.plugins['cobe'].exports['self'].get_reply
         reply_text = '{}'.format(get_reply(incoming_message))
         reply_audio = gTTS(text=reply_text, lang='en')
-        audio_file = 'data/talkback/output/{}-reply.ogg'.format(time.time())
+        audio_file = 'data/talkback/{}-reply.ogg'.format(time.time())
         reply_audio.save(audio_file)
 
         with open(audio_file, 'rb') as f:
@@ -67,8 +64,7 @@ class TalkBackPlugin(object):
             # await bot.sendAudio(chat_id, f, reply_to_message_id=m_id)
             await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
 
-        os.unlink(of)
-        os.unlink(audio_file)
+        os.remove(audio_file)
 
 p = TalkBackPlugin()
 
