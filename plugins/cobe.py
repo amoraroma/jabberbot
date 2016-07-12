@@ -3,7 +3,6 @@ import glob
 import json
 import time
 from telepot import glance
-from gtts import gTTS
 from cobe.brain import Brain
 
 

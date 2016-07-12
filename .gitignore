@@ -8,3 +8,4 @@ data/cobe/*users
 data/cobe/train.txt.*
 data/mediasnag/
 data/quote/
+data/talkback

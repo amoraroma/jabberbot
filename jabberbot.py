@@ -31,6 +31,8 @@ def _dbg(msg: str, tag: str='INFO', level: int=0) -> None:
 
 class JabberBot(telepot.async.Bot):
     def __init__(self, *args, **kwargs) -> None:
+        self._token = args[0]
+
         self.config_file = kwargs['config']
         del kwargs['config']
 
