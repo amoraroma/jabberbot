@@ -184,7 +184,10 @@ class CobePlugin(object):
             with open('data/cobe/train.txt') as f:
                 lines = f.read().split('\n')
                 for line in lines:
-                    line = line.lower().replace('"', '')
+                    if len(line.rstrip().lstrip()) == 0 or \
+                       line[0] == '#' or line[:2] == '//':
+                        continue
+                    line = line.lower()
                     self.brain.learn(line)
             self.brain.stop_batch_learning()
             t_files = glob.glob('data/cobe/train.txt.*')
