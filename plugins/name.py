@@ -33,7 +33,7 @@ class NamePlugin(object):
         m_id = msg['message_id']
         name_parts = self.generate_name()
         name = '{}, {} of the {} of the {} {}'.format(*name_parts[:-1])
-        reply = 'You are now {}, {} of their name.'.format(name, name_parts[-1])
+        reply = 'Your are now {}, {} of their name.'.format(name, name_parts[-1])
         await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     def generate_name(self) -> str:
