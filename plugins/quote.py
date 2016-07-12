@@ -15,6 +15,8 @@ Commands:
 
 class QuotePlugin(object):
     def __init__(self) -> None:
+        if not os.path.isdir('data/quote'):
+            os.mkdir('data/quote')
         if os.path.isfile('data/quote/quotes'):
             with open('data/quote/quotes', 'r') as f:
                 self.quotes = json.load(f)
