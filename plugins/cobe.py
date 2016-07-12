@@ -8,7 +8,7 @@ from gtts import gTTS
 
 
 __author__ = 'sli'
-__version__ = '0.2'
+__version__ = '0.2.1'
 __doc__ = '''Uses Cobe to learn grammar and generate responses. Unless silenced, it will respond to messages automatically.
 
 Commands:
