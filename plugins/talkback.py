@@ -52,8 +52,9 @@ class TalkBackPlugin(object):
 
         incoming_message = self._recog.recognize_google(audio)
 
-        self._dbg('User said: {}'.format(incoming_message),
-                  tag='PLUGIN', level=3)
+        self._dbg('{} said: {}'.format(msg['from']['first_name'],
+                                       incoming_message),
+                  tag='PLUGIN', level=4)
 
         get_reply = bot.plugins['cobe'].exports['self'].get_reply
         reply_text = '{}'.format(get_reply(incoming_message))
