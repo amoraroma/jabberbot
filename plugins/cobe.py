@@ -187,7 +187,7 @@ class CobePlugin(object):
                     if len(line.rstrip().lstrip()) == 0 or \
                        line[0] == '#' or line[:2] == '//':
                         continue
-                    line = line.lower()
+                    line = line.lower().lstrip().rstrip()
                     self.brain.learn(line)
             self.brain.stop_batch_learning()
             t_files = glob.glob('data/cobe/train.txt.*')
