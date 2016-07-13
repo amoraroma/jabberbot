@@ -46,7 +46,7 @@ class JabberBot(telepot.async.Bot):
         self.load()
 
     async def on_chat_message(self, msg: dict) -> None:
-        # global _started 
+        # global _started
         content_type, chat_type, chat_id = telepot.glance(msg)
 
         if content_type == 'text':
@@ -96,34 +96,6 @@ class JabberBot(telepot.async.Bot):
                 await self._dispatch('text', msg)
         else:
             await self._dispatch(content_type, msg)
-
-    def on_callback_query(self, msg: dict) -> None:
-        # message = telepot.glance(msg, flavor='callback_query')
-        # query_id, from_id, query_data = message
-        # print('Callback Query:', query_id, from_id, query_data)
-        pass
-
-    def on_inline_query(self, msg: dict) -> None:
-        # message = telepot.glance(msg, flavor='inline_query')
-        # query_id, from_id, query_string = message
-        # print('Inline Query:', query_id, from_id, query_string)
-
-        # def compute_answer():
-        #     articles = [{'type': 'article',
-        #                  'id': 'abc',
-        #                  'title': query_string,
-        #                  'message_text': query_string}]
-
-        #     return articles
-
-        # self._answerer.answer(msg, compute_answer)
-        pass
-
-    def on_chosen_inline_result(self, msg: dict) -> None:
-        # message = telepot.glance(msg, flavor='chosen_inline_result')
-        # result_id, from_id, query_string = message
-        # print('Chosen Inline Result:', result_id, from_id, query_string)
-        pass
 
     def load(self) -> None:
         global DEBUG, __prompt__

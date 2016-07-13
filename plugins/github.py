@@ -38,5 +38,5 @@ p = GithubPlugin()
 
 exports = {
     'self': p,
-    '/github': p.run
+    '/github': p.run,
 }
