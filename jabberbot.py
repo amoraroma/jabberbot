@@ -1,5 +1,6 @@
 import os
 import time
+import chalk
 import random
 import asyncio
 import telepot
@@ -18,15 +19,29 @@ _longest_tag = 6
 
 def _dbg(msg: str, tag: str='INFO', level: int=0) -> None:
     global DEBUG, _longest_tag
-    
+
     if level <= DEBUG:
+        if tag == 'INFO':
+            disp = chalk.blue
+        elif tag == 'PLUGIN':
+            disp = chalk.yellow
+        elif tag in ['SYS', 'BOT', 'INFO']:
+            disp = chalk.green
+        elif tag == 'GOOD':
+            disp = chalk.cyan
+        elif tag == 'ERROR':
+            disp = chalk.red
+        else:
+            disp = chalk.white
         if msg == '':
             tag = '\\\\/'
+            disp = chalk.cyan
         if len(tag) > _longest_tag:
             _longest_tag = len(tag)
         tag = '[{}]'.format(tag).rjust(_longest_tag + 2)
-        print('[{}] {} {} {}'.format(time.asctime(), tag,
-                                     __prompt__, msg))
+        message = '[{}] {} {} {}'.format(time.asctime(), tag,
+                                         __prompt__, msg)
+        disp(message)
 
 
 class JabberBot(telepot.async.Bot):

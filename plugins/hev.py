@@ -1,6 +1,8 @@
 import os
 import glob
 import time
+
+from telepot import glance
 from pydub import AudioSegment
 
 
@@ -31,13 +33,18 @@ tens_words = ['zero', 'ten', 'twenty', 'thirty', 'fourty', 'fifty',
 class HEVPlugin(object):
     def __init__(self) -> None:
         if not os.path.isdir('data/hev/'):
-            os.path.mkdir('data/hev/')
+            os.mkdir('data/hev/')
         if not os.path.isdir('data/hev/fvox/'):
-            os.path.mkdir('data/hev/fvox/')
+            os.mkdir('data/hev/fvox/')
         if not os.path.isdir('data/hev/tmp/'):
-            os.path.mkdir('data/hev/tmp/')
-        raw_words = glob.glob('data/hev/fvox/*.wav')
-        self.words = [f.replace('data/hev/fvox/', '') for f in raw_words]
+            os.mkdir('data/hev/tmp/')
+        word_paths = glob.glob('data/hev/fvox/*.wav')
+        prefix = os.path.commonprefix(word_paths)
+        self.words = []
+        for word in word_paths:
+            word = word.replace('.wav', '') \
+                       .replace(prefix, '')
+            self.words.append(word)
 
     def setup(self, bot) -> None:
         self._dbg = bot._dbg
@@ -45,39 +52,44 @@ class HEVPlugin(object):
     async def run(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
-        sentence_audio = await HEVPlugin.say(msg['text'])
 
-        self._dbg('saying: {}'.format(msg['text']),
+        msg_text = msg['text'].split(' ', 1)[1]
+
+        self._dbg('saying: {}'.format(msg_text),
                   tag='PLUGIN', level=4)
 
-        with open(sentence_audio) as f:
-            bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
+        sentence_audio = await HEVPlugin.say(msg_text)
 
-        os.delete(sentence_audio)
+        with open(sentence_audio, 'rb') as f:
+            await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
+
+        os.remove(sentence_audio)
 
     async def wordlist(self, msg: dict, bot) -> None:
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
-        reply = 'Word list: {}'.format(','.join(self.wordlist))
-        bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
+        reply = 'Word list: {}'.format(','.join(self.words))
+        await bot.sendMessage(chat_id, reply, reply_to_message_id=m_id)
 
     @staticmethod
-    async def say(self, sentence):
-        sayable = sentence.replace('.', ' _period')
-                          .replace(',', ' _comma')
-                          .replace('{time}', HEVPlugin.say_time())
-        audio = pydub.AudioSegment.empty()
+    async def say(sentence):
+        sayable = sentence.replace('.', ' _period') \
+                          .replace(',', ' _comma') \
+                          .replace('{time}', HEVPlugin.say_time()) \
+                          .split(' ')
+        audio = AudioSegment.empty()
         for word in sayable:
+            f = 'data/hev/fvox/{}.wav'.format(word)
             if not os.path.isfile(f):
                 word = 'warning2'
-            f = 'data/hev/fvox/{}.wav'.format(word)
+                f = 'data/hev/fvox/{}.wav'.format(word)
             audio += AudioSegment.from_wav(f)
-        out_filename = 'data/hev/outputs/{}.wav'.format(time.time())
+        out_filename = 'data/hev/tmp/{}.wav'.format(time.time())
         audio.export(out_filename, format='ogg')
         return out_filename
 
     @staticmethod
-    def say_time(self):
+    def say_time():
         time_sentence = ['time_is_now']
         hour = int(time.strftime('%I'))
         minutes = time.strftime('%M')
@@ -94,12 +106,12 @@ class HEVPlugin(object):
             if ones > 0:
                 time_sentence.append(num_words[ones])
         time_sentence.append(ampm)
-        return time_sentence
+        return ' '.join(time_sentence)
 
 p = HEVPlugin()
 
 exports = {
     'self': p,
-    '/hev': p.run
+    '/hev': p.run,
     '/wordlist': p.wordlist
 }
