@@ -3,3 +3,6 @@ dice==1.0.3
 youtube-dl==2016.7.2
 PyGithub==1.26.0
 soundscrape==0.26.2
+gTTS==1.1.6
+SpeechRecognition==3.4.6
+pydub==0.16.4
