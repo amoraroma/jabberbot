@@ -12,7 +12,9 @@ Adjust the following for your operating system:
     $ pip install -r requirements.txt
     $ pip install -r requirements-plugins.txt
 
-Now put your Telegram API key in a file in the same directory as `jabberbot.py`. It can be named anything you want, but the default is "token." You're all set. Have fun.
+Now put your Telegram API key in a file in the same directory as `jabberbot.py`. It can be named anything you want, but the default is "token." Set your bot's username in the config, and the admin user's user ID if you want (not required, it just enables `/reload` for that user).
+
+You're all set. Have fun.
 
 ### Run
 
