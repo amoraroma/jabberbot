@@ -84,4 +84,6 @@ If you have Half-Life installed (not Half-Life 2), you can simply copy the audio
 
 If you only have Half-Life 2, you'll need to use [GCFScape](http://nemesis.thewavelength.net/index.php?p=26) to extract the audio from `hl2_sound_misc_dir.vpk` in the Half-Life 2 resources.
 
-No, I'm not going to commit the audio to the repository, so don't bother asking. Half-Life goes on sale for $2.50 constantly, just buy it. You ought to own it already, anyway.
+No, I'm not going to commit the audio to the repository, so don't bother asking. Half-Life goes on sale for $2.50 constantly, just buy it. You ought to own it already, anyway. [I'll even link it for you.](http://store.steampowered.com/app/70/)
+
+I'd definitely recommend springing for the Half-Life Bundle instead, though.
