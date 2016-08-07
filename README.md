@@ -33,7 +33,7 @@ Libav is used by the pydub module in the `talkback` plugin, and as such you shou
 
     $ python3.5 jabberbot.py
 
-Or if you're not using the default filenames for your config and token:
+Or if you're not using the default filenames for your config and/or token:
 
     $ python3.5 jabberbot.py -c my-config.cfg -t my-token
 
