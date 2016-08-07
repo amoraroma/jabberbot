@@ -18,7 +18,7 @@ You're all set. Have fun.
 
 ### Windows
 
-Jabberbot works just fine on Windows, but the setup will be _slightly_ different. You can skip installing development headers, instead you'll need to install PyStemmer and ffmpeg manually. Not big deal.
+Jabberbot works just fine on Windows, but the setup will be _slightly_ different. You can skip installing development headers, instead you'll need to install PyStemmer and libav manually. Not big deal.
 
 * PyStemmer: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pystemmer
 * Libav: http://builds.libav.org/windows/release-gpl/
