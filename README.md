@@ -8,13 +8,26 @@ Jabberbot requires Python 3.5 or higher.
 
 Adjust the following for your operating system:
 
-    $ sudo dnf install python3-devel ffmpeg
+    $ sudo dnf install python3-devel libav-tools libavcodec-extra-53
     $ pip install -r requirements.txt
     $ pip install -r requirements-plugins.txt
 
 Now put your Telegram API key in a file in the same directory as `jabberbot.py`. It can be named anything you want, but the default is "token." Set your bot's username in the config, and the admin user's user ID if you want (not required, it just enables `/reload` for that user).
 
 You're all set. Have fun.
+
+### Windows
+
+Jabberbot works just fine on Windows, but the setup will be _slightly_ different. You can skip installing development headers, instead you'll need to install PyStemmer and ffmpeg manually. Not big deal.
+
+* PyStemmer: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pystemmer
+* Libav: http://builds.libav.org/windows/release-gpl/
+
+Installing the PyStemmer [wheel file](http://pythonwheels.com/) is done with pip in the following fashion:
+
+    $ pip install PyStemmer-1.3.0-cp35-none-win32.whl
+
+Libav is used by the pydub module in the `talkback` plugin, and as such you should follow [pydub's install instruction for libav](https://github.com/jiaaro/pydub#getting-ffmpeg-set-up). Windows is at the bottom. If you're not sure how to add a directory to your PATH, you can read instructions [here](http://www.howtogeek.com/118594/how-to-edit-your-system-path-for-easy-command-line-access/).
 
 ### Run
 
