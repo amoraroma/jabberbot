@@ -73,3 +73,15 @@ Want to write one? [Go write one!](https://github.com/sli/jabberbot/wiki/Writing
 To train cobe, simply place a file named `train.txt` containing your training text in `data/cobe/`. This file will be used to train cobe then renamed (to something similar to `train.txt.0`). Only a file named `train.txt` will be used to train cobe, so don't worry about these backups.
 
 Training can be invoked manually with `/reload`.
+
+### Setting up the HEV plugin
+
+If you have Half-Life installed (not Half-Life 2), you can simply copy the audio from the resources and into `data/hev/fvox/`. The locations of these files are:
+
+* Windows: `C:\Program Files (x86)\Steam\steamapps\common\Half-Life\valve\sound\fvox`
+* Linux: `~/.steam/steam/SteamApps/common/Half-Life/valve/sound/fvox`
+* OS X: `~/Library/Application Support/Steam/steamapps/common/Half-Life/valve/sound/fvox`
+
+If you only have Half-Life 2, you'll need to use [GCFScape](http://nemesis.thewavelength.net/index.php?p=26) to extract the audio from `hl2_sound_misc_dir.vpk` in the Half-Life 2 resources.
+
+No, I'm not going to commit the audio to the repository, so don't bother asking. Half-Life goes on sale for $2.50 constantly, just buy it. You ought to own it already, anyway.
