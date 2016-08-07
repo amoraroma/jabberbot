@@ -82,7 +82,7 @@ If you have Half-Life installed (not Half-Life 2), you can simply copy the audio
 * Linux: `~/.steam/steam/SteamApps/common/Half-Life/valve/sound/fvox`
 * OS X: `~/Library/Application Support/Steam/steamapps/common/Half-Life/valve/sound/fvox`
 
-If you only have Half-Life 2, you'll need to use [GCFScape](http://nemesis.thewavelength.net/index.php?p=26) to extract the audio from `hl2_sound_misc_dir.vpk` in the Half-Life 2 resources.
+If you only have Half-Life 2, you'll need to use [GCFScape](http://nemesis.thewavelength.net/index.php?p=26) to extract the audio from `hl2_sound_misc_dir.vpk` in the Half-Life 2 resources. You can also do the same with Half-Life: Source.
 
 No, I'm not going to commit the audio to the repository, so don't bother asking. Half-Life goes on sale for $2.50 constantly, just buy it. You ought to own it already, anyway. [I'll even link it for you.](http://store.steampowered.com/app/70/)
 
