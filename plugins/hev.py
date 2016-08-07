@@ -53,12 +53,16 @@ class HEVPlugin(object):
         content_type, chat_type, chat_id = glance(msg)
         m_id = msg['message_id']
 
-        msg_text = msg['text'].split(' ', 1)[1]
+        sentence = msg['text'].split(' ', 1)[1]
+        sayable = sentence.replace('.', ' _period') \
+                          .replace(',', ' _comma') \
+                          .replace('{time}', HEVPlugin.say_time()) \
+                          .split(' ')
 
-        self._dbg('saying: {}'.format(msg_text),
+        self._dbg('saying: {}'.format(sayable),
                   tag='PLUGIN', level=4)
 
-        sentence_audio = await HEVPlugin.say(msg_text)
+        sentence_audio = await HEVPlugin.say(sayable)
 
         with open(sentence_audio, 'rb') as f:
             await bot.sendVoice(chat_id, f, reply_to_message_id=m_id)
@@ -73,12 +77,8 @@ class HEVPlugin(object):
 
     @staticmethod
     async def say(sentence):
-        sayable = sentence.replace('.', ' _period') \
-                          .replace(',', ' _comma') \
-                          .replace('{time}', HEVPlugin.say_time()) \
-                          .split(' ')
         audio = AudioSegment.empty()
-        for word in sayable:
+        for word in sentence:
             f = 'data/hev/fvox/{}.wav'.format(word)
             if not os.path.isfile(f):
                 word = 'warning2'
