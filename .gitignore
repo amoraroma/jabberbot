@@ -1,4 +1,5 @@
-/token
+/token-local
+/jabberbot-local.cfg
 __pycache__
 *.brain
 *.brain-journal

@@ -1,6 +1,8 @@
 import os
+import json
 import time
 import chalk
+import click
 import random
 import asyncio
 import telepot
@@ -8,7 +10,7 @@ import importlib
 import telepot.async
 
 
-__version__ = '0.2'
+__version__ = '0.2.1'
 __prompt__ = '::'
 __banner__ = 'Jabberbot'
 
@@ -149,13 +151,18 @@ class JabberBot(telepot.async.Bot):
                 await func(msg, self)
 
 
-if __name__ == '__main__':
-    import json
-
-    with open('token') as f:
+@click.command()
+@click.option('--config', '-c', default='jabberbot.cfg',
+              help=('Configuration file for this instance. '
+                    'Default: jabberbot.cfg'))
+@click.option('--token', '-t', default=None,
+              help=('File containing the API token for the bot. '
+                    'Default: token'))
+def jabberbot(config, token):
+    with open(token) as f:
         TOKEN = f.read().rstrip()
 
-    bot = JabberBot(TOKEN, config='jabberbot.cfg')
+    bot = JabberBot(TOKEN, config=config)
 
     loop = asyncio.get_event_loop()
     loop.create_task(bot.message_loop())
@@ -175,3 +182,5 @@ if __name__ == '__main__':
     else:
         _dbg('Ouch!', tag='ERROR')
 
+if __name__ == '__main__':
+    jabberbot()
