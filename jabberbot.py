@@ -93,7 +93,7 @@ class JabberBot(telepot.async.Bot):
                 #     await self.sendMessage(chat_id, '-- jabberbot.')
                 #     loop.run_until_complete(asyncio.sleep(0))
                 #     sys.exit(0)
-                elif command in ['/help', '/start']:
+                elif command in ['/help456467', '/start245445677']:
                     m_id = msg['message_id']
                     args = content.split(' ')[1:]
                     if len(args) > 0:
