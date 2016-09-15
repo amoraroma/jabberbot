@@ -1,4 +1,4 @@
--e git+https://github.com/sli/cobe.git#egg=cobe
+-e git+https://github.com/zoner-tm/jabberbot.git#egg=cobe
 dice==1.0.3
 youtube-dl==2016.7.2
 PyGithub==1.26.0
